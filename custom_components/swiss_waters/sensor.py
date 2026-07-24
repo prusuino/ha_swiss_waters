@@ -53,7 +53,9 @@ async def async_setup_entry(
 
 
 class SwissWatersSensor(CoordinatorEntity[SwissWatersCoordinator], SensorEntity):
-    _attr_has_entity_name = False
+    # Entity name holds only the measure ("Water temperature"); Home Assistant
+    # prepends the station device name ("Aare – Murgenthal") automatically.
+    _attr_has_entity_name = True
     _attr_attribution = ATTRIBUTION
 
     def __init__(
@@ -74,8 +76,7 @@ class SwissWatersSensor(CoordinatorEntity[SwissWatersCoordinator], SensorEntity)
         self._hass_ref = hass
         self._station_id = station["station_id"]
         self._data_key = data_key
-        station_name = station.get("name") or self._station_id
-        self._attr_name = f"{station_name} {t(name_key, hass)}"
+        self._attr_name = t(name_key, hass)
         self._attr_unique_id = f"{entry.entry_id}_{self._station_id}_{data_key}"
         self.entity_id = f"sensor.swiss_waters_{self._station_id}_{data_key}"
         self._attr_device_info = station_device_info(hass, entry, station)
