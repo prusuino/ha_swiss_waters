@@ -1,5 +1,9 @@
 # Changelog
 
+## 1.1.0 — 2026-07-25
+
+- Station selection now combines **radius search and/or favorites**: pick individual stations by name from a searchable dropdown (e.g. "Aare – Bern, Schönau"), use the radius search around a location, or both together — the station set is the union of the two. Setting the radius to 0 disables the radius search for a favorites-only setup. Existing radius-based entries keep working unchanged.
+
 ## 1.0.0 — 2026-07-24
 
 Initial public release.

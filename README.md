@@ -59,8 +59,11 @@ Entity names, device info, the auto-generated dashboard, and the config flow ada
 
 1. Go to **Settings → Devices & Services → Add Integration**.
 2. Search for **"Swiss Waters (BAFU)"**.
-3. Latitude/longitude default to your Home Assistant home location. Set the radius (km) to your preference.
-4. Done. Add the integration again for a different location or radius — each instance is independent.
+3. Choose your stations — both selection modes combine freely:
+   - **Radius search:** latitude/longitude default to your Home Assistant home location; set the radius (km). Radius 0 disables the radius search.
+   - **Favorites:** pick individual stations by name from the searchable dropdown (e.g. "Aare – Bern, Schönau") — useful for stations outside your radius, like your favorite swimming river.
+   The resulting station set is the union of both.
+4. Done. Add the integration again for a different selection — each instance is independent.
 
 ### Automatic dashboard
 

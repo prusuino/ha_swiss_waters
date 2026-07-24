@@ -10,6 +10,7 @@ UPDATE_INTERVAL_MINUTES = 10
 CONF_LATITUDE = "latitude"
 CONF_LONGITUDE = "longitude"
 CONF_RADIUS_KM = "radius_km"
+CONF_STATIONS = "stations"
 
 DEFAULT_RADIUS_KM = 50
 

@@ -3,20 +3,22 @@
     "step": {
       "user": {
         "title": "Swiss Waters (BAFU)",
-        "description": "Monitors the official FOEN/BAFU hydrological stations (water temperature, water level, discharge, flood danger level) around a location.",
+        "description": "Monitors the official FOEN/BAFU hydrological stations (water temperature, water level, discharge, flood danger level). Combine both selection modes as you like: a radius search around a location (set the radius to 0 to disable it) and/or hand-picked favorite stations. The station set is the union of both.",
         "data": {
           "latitude": "Latitude",
           "longitude": "Longitude",
-          "radius_km": "Radius (km)"
+          "radius_km": "Radius (km, 0 = no radius search)",
+          "stations": "Favorite stations"
         }
       }
     },
     "error": {
       "cannot_connect": "The LINDAS data service could not be reached. Please try again later.",
-      "no_stations": "No monitoring stations found within this radius. Try a larger radius."
+      "no_stations": "No monitoring stations found for this selection. Try a larger radius or pick favorites.",
+      "nothing_selected": "Set a radius greater than 0 and/or pick at least one favorite station."
     },
     "abort": {
-      "already_configured": "This location/radius combination is already configured."
+      "already_configured": "This selection is already configured."
     }
   }
 }

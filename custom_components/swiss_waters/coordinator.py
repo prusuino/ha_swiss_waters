@@ -23,6 +23,7 @@ from .const import (
     CONF_LATITUDE,
     CONF_LONGITUDE,
     CONF_RADIUS_KM,
+    CONF_STATIONS,
     DOMAIN,
     HYDRO_DIMENSION,
     LINDAS_QUERY_URL,
@@ -83,14 +84,22 @@ def _float(binding: dict, key: str) -> float | None:
 
 
 def _parse_bindings(
-    bindings: list[dict], lat: float, lon: float, radius_km: float
+    bindings: list[dict],
+    lat: float,
+    lon: float,
+    radius_km: float,
+    favorite_ids: set[str] | None = None,
 ) -> dict[str, dict]:
-    """Merge SPARQL result rows into one record per station, filter by radius.
+    """Merge SPARQL result rows into one record per station.
 
-    A station can appear in more than one row (e.g. separate river/lake
-    observation graphs); rows are merged by taking the first non-null value
-    per measure, preferring the row with the most recent measurement time.
+    A station is kept when it lies within the radius (radius 0 disables the
+    radius search) OR when its ID is in the favorites set — the two selection
+    modes combine. A station can appear in more than one row (e.g. separate
+    river/lake observation graphs); rows are merged by taking the first
+    non-null value per measure, preferring the row with the most recent
+    measurement time.
     """
+    favorites = favorite_ids or set()
     stations: dict[str, dict] = {}
     for b in bindings:
         station_id = _value(b, "id")
@@ -102,7 +111,8 @@ def _parse_bindings(
             continue
         s_lat, s_lon = coords
         distance = _haversine_km(lat, lon, s_lat, s_lon)
-        if distance > radius_km:
+        in_radius = radius_km > 0 and distance <= radius_km
+        if not in_radius and station_id not in favorites:
             continue
 
         water_iri = _value(b, "water") or ""
@@ -137,7 +147,11 @@ def _parse_bindings(
 
 
 async def async_fetch_stations(
-    hass: HomeAssistant, lat: float, lon: float, radius_km: float
+    hass: HomeAssistant,
+    lat: float,
+    lon: float,
+    radius_km: float,
+    favorite_ids: set[str] | None = None,
 ) -> dict[str, dict]:
     session = async_get_clientsession(hass)
     async with session.post(
@@ -149,7 +163,7 @@ async def async_fetch_stations(
         resp.raise_for_status()
         payload = await resp.json()
     bindings = payload.get("results", {}).get("bindings", [])
-    return _parse_bindings(bindings, lat, lon, radius_km)
+    return _parse_bindings(bindings, lat, lon, radius_km, favorite_ids)
 
 
 class SwissWatersCoordinator(DataUpdateCoordinator[dict]):
@@ -172,6 +186,7 @@ class SwissWatersCoordinator(DataUpdateCoordinator[dict]):
                 data[CONF_LATITUDE],
                 data[CONF_LONGITUDE],
                 data[CONF_RADIUS_KM],
+                set(data.get(CONF_STATIONS, [])),
             )
         except Exception as err:
             raise UpdateFailed(f"FOEN hydrological data unreachable: {err}") from err

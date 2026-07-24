@@ -20,6 +20,18 @@ STRINGS: dict[str, dict[str, str]] = {
         "fr": "Eaux suisses (Rayon {radius} km)",
         "it": "Acque svizzere (Raggio {radius} km)",
     },
+    "entry_title_favorites": {
+        "de": "Gewässer Schweiz ({count} Favoriten)",
+        "en": "Swiss Waters ({count} favorites)",
+        "fr": "Eaux suisses ({count} favoris)",
+        "it": "Acque svizzere ({count} preferiti)",
+    },
+    "entry_title_combined": {
+        "de": "Gewässer Schweiz (Umkreis {radius} km + {count} Favoriten)",
+        "en": "Swiss Waters (Radius {radius} km + {count} favorites)",
+        "fr": "Eaux suisses (Rayon {radius} km + {count} favoris)",
+        "it": "Acque svizzere (Raggio {radius} km + {count} preferiti)",
+    },
     "manufacturer": {
         "de": "Bundesamt für Umwelt BAFU",
         "en": "Federal Office for the Environment FOEN",
