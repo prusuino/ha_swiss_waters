@@ -3,19 +3,31 @@
     "step": {
       "user": {
         "title": "Swiss Waters (UFAM)",
-        "description": "Monitora le stazioni idrologiche ufficiali dell'UFAM (temperatura dell'acqua, livello dell'acqua, portata, livello di pericolo di piena). Le due modalità di selezione si combinano liberamente: ricerca per raggio attorno a una posizione (raggio 0 = disattivata) e/o stazioni preferite scelte per nome. Vale l'unione delle due selezioni.",
+        "description": "Scegli cosa configurare: una panoramica di tutte le stazioni in un raggio, oppure una singola stazione preferita, seguita indipendentemente da una posizione.",
+        "data": {
+          "mode": "Modalità"
+        }
+      },
+      "radius": {
+        "title": "Swiss Waters (UFAM)",
+        "description": "Tutte le stazioni UFAM in questo raggio diventano dispositivi con i loro valori misurati.",
         "data": {
           "latitude": "Latitudine",
           "longitude": "Longitudine",
-          "radius_km": "Raggio (km, vuoto = solo preferiti)",
-          "stations": "Stazioni preferite"
+          "radius_km": "Raggio"
+        }
+      },
+      "favorite": {
+        "title": "Swiss Waters (UFAM)",
+        "description": "Scegli una stazione per nome — aggiungi di nuovo l'integrazione per altri preferiti.",
+        "data": {
+          "station": "Stazione"
         }
       }
     },
     "error": {
       "cannot_connect": "Il servizio dati LINDAS non è raggiungibile. Riprovare più tardi.",
-      "no_stations": "Nessuna stazione di misurazione trovata per questa selezione. Provare un raggio più grande o scegliere dei preferiti.",
-      "nothing_selected": "Impostare un raggio maggiore di 0 e/o scegliere almeno una stazione preferita."
+      "no_stations": "Nessuna stazione di misurazione trovata in questo raggio. Provare un raggio più grande."
     },
     "abort": {
       "already_configured": "Questa selezione è già configurata."

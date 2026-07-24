@@ -3,19 +3,31 @@
     "step": {
       "user": {
         "title": "Swiss Waters (OFEV)",
-        "description": "Surveille les stations hydrologiques officielles de l'OFEV (température de l'eau, niveau d'eau, débit, niveau de danger de crue). Les deux modes de sélection se combinent librement : recherche par rayon autour d'un emplacement (rayon 0 = désactivé) et/ou stations favorites choisies par nom. L'union des deux sélections s'applique.",
+        "description": "Choisissez ce qui doit être configuré : un aperçu de toutes les stations dans un rayon, ou une station favorite unique, suivie indépendamment d'un emplacement.",
+        "data": {
+          "mode": "Mode"
+        }
+      },
+      "radius": {
+        "title": "Swiss Waters (OFEV)",
+        "description": "Toutes les stations OFEV dans ce rayon deviennent des appareils avec leurs valeurs mesurées.",
         "data": {
           "latitude": "Latitude",
           "longitude": "Longitude",
-          "radius_km": "Rayon (km, vide = favoris uniquement)",
-          "stations": "Stations favorites"
+          "radius_km": "Rayon"
+        }
+      },
+      "favorite": {
+        "title": "Swiss Waters (OFEV)",
+        "description": "Choisissez une station par son nom — ajoutez à nouveau l'intégration pour d'autres favoris.",
+        "data": {
+          "station": "Station"
         }
       }
     },
     "error": {
       "cannot_connect": "Le service de données LINDAS est inaccessible. Veuillez réessayer plus tard.",
-      "no_stations": "Aucune station de mesure trouvée pour cette sélection. Essayez un rayon plus grand ou choisissez des favoris.",
-      "nothing_selected": "Définissez un rayon supérieur à 0 et/ou choisissez au moins une station favorite."
+      "no_stations": "Aucune station de mesure trouvée dans ce rayon. Essayez un rayon plus grand."
     },
     "abort": {
       "already_configured": "Cette sélection est déjà configurée."

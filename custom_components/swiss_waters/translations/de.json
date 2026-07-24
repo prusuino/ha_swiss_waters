@@ -3,19 +3,31 @@
     "step": {
       "user": {
         "title": "Swiss Waters (BAFU)",
-        "description": "Überwacht die offiziellen hydrologischen BAFU-Messstationen (Wassertemperatur, Pegelstand, Abfluss, Hochwasser-Gefahrenstufe). Beide Auswahlarten sind frei kombinierbar: Umkreissuche um einen Standort (Umkreis 0 = deaktiviert) und/oder namentlich gewählte Favoriten-Stationen. Es gilt die Vereinigung beider Auswahlen.",
+        "description": "Wähle, was eingerichtet werden soll: eine Übersicht aller Stationen in einem Umkreis, oder eine einzelne Favoriten-Station, unabhängig von einem Standort verfolgt.",
+        "data": {
+          "mode": "Modus"
+        }
+      },
+      "radius": {
+        "title": "Swiss Waters (BAFU)",
+        "description": "Alle BAFU-Messstationen in diesem Umkreis werden als Geräte mit ihren Messwerten angelegt.",
         "data": {
           "latitude": "Breitengrad",
           "longitude": "Längengrad",
-          "radius_km": "Umkreis (km, leer = nur Favoriten)",
-          "stations": "Favoriten-Stationen"
+          "radius_km": "Umkreis"
+        }
+      },
+      "favorite": {
+        "title": "Swiss Waters (BAFU)",
+        "description": "Eine Station nach Name wählen — für weitere Favoriten die Integration einfach erneut hinzufügen.",
+        "data": {
+          "station": "Station"
         }
       }
     },
     "error": {
       "cannot_connect": "Der LINDAS-Datendienst ist nicht erreichbar. Bitte später erneut versuchen.",
-      "no_stations": "Keine Messstationen für diese Auswahl gefunden. Umkreis vergrössern oder Favoriten wählen.",
-      "nothing_selected": "Umkreis grösser 0 setzen und/oder mindestens eine Favoriten-Station wählen."
+      "no_stations": "Keine Messstationen in diesem Umkreis gefunden. Umkreis vergrössern."
     },
     "abort": {
       "already_configured": "Diese Auswahl ist bereits eingerichtet."

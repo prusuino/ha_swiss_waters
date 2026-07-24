@@ -20,17 +20,17 @@ STRINGS: dict[str, dict[str, str]] = {
         "fr": "Eaux suisses (Rayon {radius} km)",
         "it": "Acque svizzere (Raggio {radius} km)",
     },
-    "entry_title_favorites": {
-        "de": "Gewässer Schweiz ({count} Favoriten)",
-        "en": "Swiss Waters ({count} favorites)",
-        "fr": "Eaux suisses ({count} favoris)",
-        "it": "Acque svizzere ({count} preferiti)",
+    "mode_radius": {
+        "de": "Umkreis-Übersicht (alle Stationen in einem Umkreis)",
+        "en": "Radius overview (all stations within a radius)",
+        "fr": "Aperçu par rayon (toutes les stations dans un rayon)",
+        "it": "Panoramica per raggio (tutte le stazioni in un raggio)",
     },
-    "entry_title_combined": {
-        "de": "Gewässer Schweiz (Umkreis {radius} km + {count} Favoriten)",
-        "en": "Swiss Waters (Radius {radius} km + {count} favorites)",
-        "fr": "Eaux suisses (Rayon {radius} km + {count} favoris)",
-        "it": "Acque svizzere (Raggio {radius} km + {count} preferiti)",
+    "mode_favorite": {
+        "de": "Einzelne Station favorisieren",
+        "en": "Favorite a single station",
+        "fr": "Ajouter une station favorite",
+        "it": "Aggiungere una stazione preferita",
     },
     "manufacturer": {
         "de": "Bundesamt für Umwelt BAFU",

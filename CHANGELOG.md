@@ -2,7 +2,7 @@
 
 ## 1.1.0 — 2026-07-25
 
-- Station selection now combines **radius search and/or favorites**: pick individual stations by name from a searchable dropdown (e.g. "Aare – Bern, Schönau"), use the radius search around a location, or both together — the station set is the union of the two. Setting the radius to 0 disables the radius search for a favorites-only setup. Existing radius-based entries keep working unchanged.
+- **Setup wizard with two modes**: choose between a *radius overview* (all stations around a location, as before) and *favoriting a single station* picked by name from a searchable dropdown (e.g. "Aare – Bern, Schönau"). Each favorite is its own entry — add the integration again for further favorites, independent of any radius. Radius overviews and favorites combine freely. Existing radius-based entries keep working unchanged.
 
 ## 1.0.0 — 2026-07-24
 

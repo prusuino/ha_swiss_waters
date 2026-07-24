@@ -11,6 +11,11 @@ CONF_LATITUDE = "latitude"
 CONF_LONGITUDE = "longitude"
 CONF_RADIUS_KM = "radius_km"
 CONF_STATIONS = "stations"
+CONF_MODE = "mode"
+CONF_STATION = "station"
+
+MODE_RADIUS = "radius"
+MODE_FAVORITE = "favorite"
 
 DEFAULT_RADIUS_KM = 50
 
