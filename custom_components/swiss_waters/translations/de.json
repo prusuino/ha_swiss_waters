@@ -7,7 +7,7 @@
         "data": {
           "latitude": "Breitengrad",
           "longitude": "Längengrad",
-          "radius_km": "Umkreis (km, 0 = keine Umkreissuche)",
+          "radius_km": "Umkreis (km, leer = nur Favoriten)",
           "stations": "Favoriten-Stationen"
         }
       }

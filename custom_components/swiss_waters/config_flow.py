@@ -56,7 +56,8 @@ class SwissWatersConfigFlow(ConfigFlow, domain=DOMAIN):
         if user_input is not None:
             lat = user_input[CONF_LATITUDE]
             lon = user_input[CONF_LONGITUDE]
-            radius = user_input[CONF_RADIUS_KM]
+            # Field left empty = no radius search (favorites only)
+            radius = float(user_input.get(CONF_RADIUS_KM) or 0)
             favorites = sorted(user_input.get(CONF_STATIONS, []))
 
             if radius <= 0 and not favorites:
@@ -105,7 +106,20 @@ class SwissWatersConfigFlow(ConfigFlow, domain=DOMAIN):
             {
                 vol.Required(CONF_LATITUDE, default=self.hass.config.latitude): vol.Coerce(float),
                 vol.Required(CONF_LONGITUDE, default=self.hass.config.longitude): vol.Coerce(float),
-                vol.Required(CONF_RADIUS_KM, default=DEFAULT_RADIUS_KM): vol.Coerce(float),
+                # Optional with a suggested value: prefilled with the default,
+                # but clearable — an empty field means favorites-only setup.
+                vol.Optional(
+                    CONF_RADIUS_KM,
+                    description={"suggested_value": DEFAULT_RADIUS_KM},
+                ): selector.NumberSelector(
+                    selector.NumberSelectorConfig(
+                        min=0,
+                        max=1000,
+                        step="any",
+                        unit_of_measurement="km",
+                        mode=selector.NumberSelectorMode.BOX,
+                    )
+                ),
                 vol.Optional(CONF_STATIONS, default=[]): selector.SelectSelector(
                     selector.SelectSelectorConfig(
                         options=_station_options(all_stations),

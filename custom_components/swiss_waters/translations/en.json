@@ -7,7 +7,7 @@
         "data": {
           "latitude": "Latitude",
           "longitude": "Longitude",
-          "radius_km": "Radius (km, 0 = no radius search)",
+          "radius_km": "Radius (km, leave empty for favorites-only)",
           "stations": "Favorite stations"
         }
       }
