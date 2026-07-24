@@ -1,0 +1,22 @@
+{
+  "config": {
+    "step": {
+      "user": {
+        "title": "Swiss Waters (OFEV)",
+        "description": "Surveille les stations hydrologiques officielles de l'OFEV (température de l'eau, niveau d'eau, débit, niveau de danger de crue) autour d'un emplacement.",
+        "data": {
+          "latitude": "Latitude",
+          "longitude": "Longitude",
+          "radius_km": "Rayon (km)"
+        }
+      }
+    },
+    "error": {
+      "cannot_connect": "Le service de données LINDAS est inaccessible. Veuillez réessayer plus tard.",
+      "no_stations": "Aucune station de mesure trouvée dans ce rayon. Essayez un rayon plus grand."
+    },
+    "abort": {
+      "already_configured": "Cette combinaison emplacement/rayon est déjà configurée."
+    }
+  }
+}

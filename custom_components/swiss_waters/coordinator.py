@@ -1,0 +1,178 @@
+"""DataUpdateCoordinator for hydrological data from the Swiss Federal Office
+for the Environment (FOEN/BAFU).
+
+Uses the official LINDAS linked-data service (lindas.admin.ch) — the FOEN's
+documented machine-readable channel for current hydrological raw data,
+updated every 10 minutes. One SPARQL request fetches all stations together
+with their latest observation (water temperature, water level, discharge,
+flood danger level); the configured radius is then applied locally.
+"""
+from __future__ import annotations
+
+import logging
+import math
+import urllib.parse
+from datetime import timedelta
+
+from homeassistant.config_entries import ConfigEntry
+from homeassistant.core import HomeAssistant
+from homeassistant.helpers.aiohttp_client import async_get_clientsession
+from homeassistant.helpers.update_coordinator import DataUpdateCoordinator, UpdateFailed
+
+from .const import (
+    CONF_LATITUDE,
+    CONF_LONGITUDE,
+    CONF_RADIUS_KM,
+    DOMAIN,
+    HYDRO_DIMENSION,
+    LINDAS_QUERY_URL,
+    UPDATE_INTERVAL_MINUTES,
+)
+
+_LOGGER = logging.getLogger(__name__)
+
+_SPARQL = f"""
+PREFIX schema: <http://schema.org/>
+PREFIX geo: <http://www.opengis.net/ont/geosparql#>
+PREFIX dim: <{HYDRO_DIMENSION}>
+SELECT ?id ?name ?wkt ?water ?time ?temperature ?level ?discharge ?danger WHERE {{
+  ?obs dim:station ?station .
+  ?station schema:identifier ?id ; schema:name ?name .
+  OPTIONAL {{ ?station geo:hasGeometry/geo:asWKT ?wkt }}
+  OPTIONAL {{ ?station schema:containedInPlace ?water }}
+  OPTIONAL {{ ?obs dim:measurementTime ?time }}
+  OPTIONAL {{ ?obs dim:waterTemperature ?temperature }}
+  OPTIONAL {{ ?obs dim:waterLevel ?level }}
+  OPTIONAL {{ ?obs dim:discharge ?discharge }}
+  OPTIONAL {{ ?obs dim:dangerLevel ?danger }}
+}}
+"""
+
+
+def _haversine_km(lat1: float, lon1: float, lat2: float, lon2: float) -> float:
+    r = 6371.0
+    p1, p2 = math.radians(lat1), math.radians(lat2)
+    dphi = math.radians(lat2 - lat1)
+    dlambda = math.radians(lon2 - lon1)
+    a = math.sin(dphi / 2) ** 2 + math.cos(p1) * math.cos(p2) * math.sin(dlambda / 2) ** 2
+    return 2 * r * math.asin(math.sqrt(a))
+
+
+def _parse_wkt_point(wkt: str) -> tuple[float, float] | None:
+    """Parse 'POINT(lon lat)' → (lat, lon)."""
+    try:
+        inner = wkt[wkt.index("(") + 1 : wkt.index(")")]
+        lon_s, lat_s = inner.split()
+        return float(lat_s), float(lon_s)
+    except (ValueError, IndexError):
+        return None
+
+
+def _value(binding: dict, key: str) -> str | None:
+    return binding.get(key, {}).get("value")
+
+
+def _float(binding: dict, key: str) -> float | None:
+    raw = _value(binding, key)
+    if raw is None:
+        return None
+    try:
+        return float(raw)
+    except ValueError:
+        return None
+
+
+def _parse_bindings(
+    bindings: list[dict], lat: float, lon: float, radius_km: float
+) -> dict[str, dict]:
+    """Merge SPARQL result rows into one record per station, filter by radius.
+
+    A station can appear in more than one row (e.g. separate river/lake
+    observation graphs); rows are merged by taking the first non-null value
+    per measure, preferring the row with the most recent measurement time.
+    """
+    stations: dict[str, dict] = {}
+    for b in bindings:
+        station_id = _value(b, "id")
+        if not station_id:
+            continue
+
+        coords = _parse_wkt_point(_value(b, "wkt") or "")
+        if coords is None:
+            continue
+        s_lat, s_lon = coords
+        distance = _haversine_km(lat, lon, s_lat, s_lon)
+        if distance > radius_km:
+            continue
+
+        water_iri = _value(b, "water") or ""
+        water = urllib.parse.unquote(water_iri.rsplit("/", 1)[-1]) if water_iri else None
+
+        danger_raw = _value(b, "danger")
+        row = {
+            "station_id": station_id,
+            "name": _value(b, "name"),
+            "water_body": water,
+            "latitude": s_lat,
+            "longitude": s_lon,
+            "distance_km": round(distance, 1),
+            "measurement_time": _value(b, "time"),
+            "temperature": _float(b, "temperature"),
+            "water_level": _float(b, "level"),
+            "discharge": _float(b, "discharge"),
+            "danger_level": int(danger_raw) if danger_raw and danger_raw.isdigit() else None,
+        }
+
+        existing = stations.get(station_id)
+        if existing is None:
+            stations[station_id] = row
+            continue
+        newer = (row["measurement_time"] or "") > (existing["measurement_time"] or "")
+        base, other = (row, existing) if newer else (existing, row)
+        for key in ("temperature", "water_level", "discharge", "danger_level", "measurement_time"):
+            if base[key] is None:
+                base[key] = other[key]
+        stations[station_id] = base
+    return stations
+
+
+async def async_fetch_stations(
+    hass: HomeAssistant, lat: float, lon: float, radius_km: float
+) -> dict[str, dict]:
+    session = async_get_clientsession(hass)
+    async with session.post(
+        LINDAS_QUERY_URL,
+        data={"query": _SPARQL},
+        headers={"Accept": "application/sparql-results+json"},
+        timeout=30,
+    ) as resp:
+        resp.raise_for_status()
+        payload = await resp.json()
+    bindings = payload.get("results", {}).get("bindings", [])
+    return _parse_bindings(bindings, lat, lon, radius_km)
+
+
+class SwissWatersCoordinator(DataUpdateCoordinator[dict]):
+    """Fetches current FOEN hydrological data for stations within the radius."""
+
+    def __init__(self, hass: HomeAssistant, entry: ConfigEntry) -> None:
+        super().__init__(
+            hass,
+            _LOGGER,
+            name=DOMAIN,
+            update_interval=timedelta(minutes=UPDATE_INTERVAL_MINUTES),
+        )
+        self._entry = entry
+
+    async def _async_update_data(self) -> dict:
+        data = self._entry.data
+        try:
+            stations = await async_fetch_stations(
+                self.hass,
+                data[CONF_LATITUDE],
+                data[CONF_LONGITUDE],
+                data[CONF_RADIUS_KM],
+            )
+        except Exception as err:
+            raise UpdateFailed(f"FOEN hydrological data unreachable: {err}") from err
+        return {"stations": stations, "count": len(stations)}

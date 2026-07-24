@@ -1,0 +1,22 @@
+{
+  "config": {
+    "step": {
+      "user": {
+        "title": "Swiss Waters (BAFU)",
+        "description": "Monitors the official FOEN/BAFU hydrological stations (water temperature, water level, discharge, flood danger level) around a location.",
+        "data": {
+          "latitude": "Latitude",
+          "longitude": "Longitude",
+          "radius_km": "Radius (km)"
+        }
+      }
+    },
+    "error": {
+      "cannot_connect": "The LINDAS data service could not be reached. Please try again later.",
+      "no_stations": "No monitoring stations found within this radius. Try a larger radius."
+    },
+    "abort": {
+      "already_configured": "This location/radius combination is already configured."
+    }
+  }
+}
