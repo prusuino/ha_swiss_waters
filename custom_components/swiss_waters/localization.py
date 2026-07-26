@@ -75,10 +75,34 @@ STRINGS: dict[str, dict[str, str]] = {
         "it": "Zona di balneazione",
     },
     "sensor_bathing_quality": {
-        "de": "Badewasserqualität",
-        "en": "Bathing water quality",
-        "fr": "Qualité de l'eau de baignade",
-        "it": "Qualità dell'acqua di balneazione",
+        "de": "Badewasserqualität (Saisonbeurteilung)",
+        "en": "Bathing water quality (seasonal assessment)",
+        "fr": "Qualité de l'eau de baignade (évaluation saisonnière)",
+        "it": "Qualità dell'acqua di balneazione (valutazione stagionale)",
+    },
+    "sensor_bathing_last_sample": {
+        "de": "Letzte Probenahme",
+        "en": "Last sampling",
+        "fr": "Dernier prélèvement",
+        "it": "Ultimo campionamento",
+    },
+    "bathing_not_live": {
+        "de": (
+            "Kein Live-Wert: amtliche Beurteilung aus den Proben der Kantone "
+            "(EU-Badegewässerrichtlinie, Bewertungszeitraum bis {date})"
+        ),
+        "en": (
+            "Not a live reading: official assessment from the cantonal samples "
+            "(EU Bathing Water Directive, assessment period up to {date})"
+        ),
+        "fr": (
+            "Pas une mesure en direct : évaluation officielle à partir des "
+            "prélèvements cantonaux (directive UE, période allant jusqu'au {date})"
+        ),
+        "it": (
+            "Non è una misura in tempo reale: valutazione ufficiale dai campioni "
+            "cantonali (direttiva UE, periodo di valutazione fino al {date})"
+        ),
     },
     "sensor_bathing_temperature": {
         "de": "Badewassertemperatur",

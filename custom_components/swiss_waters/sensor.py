@@ -18,6 +18,8 @@ from homeassistant.core import HomeAssistant
 from homeassistant.helpers.entity_platform import AddEntitiesCallback
 from homeassistant.helpers.update_coordinator import CoordinatorEntity
 
+from datetime import date
+
 from homeassistant.util import slugify
 
 from .bathing import QUALITY_CLASSES
@@ -55,6 +57,9 @@ async def async_setup_entry(
                 )
             else:
                 entities.append(SwissBathingQualitySensor(hass, coordinator, entry, site))
+                entities.append(
+                    SwissBathingSampleDateSensor(hass, coordinator, entry, site)
+                )
         async_add_entities(entities)
         return
 
@@ -166,9 +171,12 @@ class SwissBathingQualitySensor(CoordinatorEntity, SensorEntity):
     def extra_state_attributes(self):
         site = self._site()
         values = site.get("last_values") or {}
+        sampled = site.get("last_sample_date")
         return {
             "site_id": self._site_id,
             "quality_text": bathing_quality_text(site.get("quality"), self._hass_ref),
+            "note": t("bathing_not_live", self._hass_ref, date=sampled or "?"),
+            "live": False,
             "season": site.get("season"),
             "last_sample_date": site.get("last_sample_date"),
             "e_coli": values.get("E.coli"),
@@ -217,4 +225,53 @@ class SwissBathingTemperatureSensor(CoordinatorEntity, SensorEntity):
             "air_temperature": site.get("air_temperature"),
             "measurement_time": site.get("measurement_time"),
             "distance_km": site.get("distance_km"),
+        }
+
+
+class SwissBathingSampleDateSensor(CoordinatorEntity, SensorEntity):
+    """Date of the most recent sample behind the quality assessment.
+
+    Exists so the age of the assessment is visible at a glance instead of
+    being buried in the attributes of the quality sensor.
+    """
+
+    _attr_has_entity_name = True
+    _attr_attribution = BATHING_ATTRIBUTION
+    _attr_icon = "mdi:calendar-clock"
+    _attr_device_class = SensorDeviceClass.DATE
+
+    def __init__(self, hass: HomeAssistant, coordinator, entry: ConfigEntry, site: dict) -> None:
+        super().__init__(coordinator)
+        self._hass_ref = hass
+        self._site_id = site["site_id"]
+        self._attr_name = t("sensor_bathing_last_sample", hass)
+        self._attr_unique_id = f"{entry.entry_id}_{self._site_id}_last_sample"
+        self.entity_id = f"sensor.swiss_waters_bathing_{slugify(self._site_id)}_last_sample"
+        self._attr_device_info = bathing_device_info(hass, entry, site)
+
+    def _site(self) -> dict:
+        return (self.coordinator.data or {}).get("sites", {}).get(self._site_id, {})
+
+    @property
+    def available(self) -> bool:
+        return super().available and bool(self._site())
+
+    @property
+    def native_value(self):
+        raw = self._site().get("last_sample_date")
+        if not raw:
+            return None
+        try:
+            return date.fromisoformat(raw)
+        except ValueError:
+            return None
+
+    @property
+    def extra_state_attributes(self):
+        site = self._site()
+        return {
+            "site_id": self._site_id,
+            "season": site.get("season"),
+            "sample_count": site.get("sample_count"),
+            "live": False,
         }
