@@ -20,6 +20,8 @@ from homeassistant.helpers.aiohttp_client import async_get_clientsession
 from homeassistant.helpers.update_coordinator import DataUpdateCoordinator, UpdateFailed
 
 from .const import (
+    BATHING_UPDATE_INTERVAL_MINUTES,
+    CONF_BATHING_SITES,
     CONF_LATITUDE,
     CONF_LONGITUDE,
     CONF_RADIUS_KM,
@@ -191,3 +193,68 @@ class SwissWatersCoordinator(DataUpdateCoordinator[dict]):
         except Exception as err:
             raise UpdateFailed(f"FOEN hydrological data unreachable: {err}") from err
         return {"stations": stations, "count": len(stations)}
+
+
+class SwissBathingCoordinator(DataUpdateCoordinator[dict]):
+    """Fetches bathing water quality and lake bathing temperatures.
+
+    Data: {"sites": {site_id: {...}}, "count": n}. Quality is a seasonal
+    assessment (see bathing.py); the Zurich lake temperatures are live.
+    """
+
+    def __init__(self, hass: HomeAssistant, entry: ConfigEntry) -> None:
+        super().__init__(
+            hass,
+            _LOGGER,
+            name=f"{DOMAIN}_bathing",
+            update_interval=timedelta(minutes=BATHING_UPDATE_INTERVAL_MINUTES),
+        )
+        self._entry = entry
+        self._cube: str | None = None
+
+    async def _async_update_data(self) -> dict:
+        from .bathing import (
+            async_fetch_quality,
+            async_fetch_sites,
+            async_fetch_temperatures,
+            async_latest_cube,
+        )
+
+        data = self._entry.data
+        lat = data[CONF_LATITUDE]
+        lon = data[CONF_LONGITUDE]
+        radius = data.get(CONF_RADIUS_KM) or 0
+        favorites = set(data.get(CONF_BATHING_SITES) or [])
+
+        try:
+            if self._cube is None:
+                self._cube = await async_latest_cube(self.hass)
+            all_sites = await async_fetch_sites(self.hass)
+            quality = await async_fetch_quality(self.hass, self._cube)
+        except Exception as err:
+            raise UpdateFailed(f"FOEN bathing water data unreachable: {err}") from err
+
+        sites: dict[str, dict] = {}
+        for site_id, site in all_sites.items():
+            distance = _haversine_km(lat, lon, site["latitude"], site["longitude"])
+            in_radius = radius > 0 and distance <= radius
+            if not in_radius and site_id not in favorites:
+                continue
+            sites[site_id] = {
+                **site,
+                **(quality.get(site_id) or {}),
+                "distance_km": round(distance, 1),
+            }
+
+        # Live lake temperatures are added when they fall inside the radius or
+        # were picked as favourites.
+        temperatures = await async_fetch_temperatures(self.hass)
+        for station in temperatures.values():
+            site_id = station["site_id"]
+            distance = _haversine_km(lat, lon, station["latitude"], station["longitude"])
+            in_radius = radius > 0 and distance <= radius
+            if not in_radius and site_id not in favorites:
+                continue
+            sites[site_id] = {**station, "distance_km": round(distance, 1)}
+
+        return {"sites": sites, "count": len(sites)}

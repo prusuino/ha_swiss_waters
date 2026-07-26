@@ -68,6 +68,42 @@ STRINGS: dict[str, dict[str, str]] = {
         "fr": "Niveau de danger de crue",
         "it": "Livello di pericolo di piena",
     },
+    "bathing_model": {
+        "de": "Badestelle",
+        "en": "Bathing site",
+        "fr": "Site de baignade",
+        "it": "Zona di balneazione",
+    },
+    "sensor_bathing_quality": {
+        "de": "Badewasserqualität",
+        "en": "Bathing water quality",
+        "fr": "Qualité de l'eau de baignade",
+        "it": "Qualità dell'acqua di balneazione",
+    },
+    "sensor_bathing_temperature": {
+        "de": "Badewassertemperatur",
+        "en": "Bathing water temperature",
+        "fr": "Température de l'eau de baignade",
+        "it": "Temperatura dell'acqua di balneazione",
+    },
+    "mode_bathing_radius": {
+        "de": "Badestellen im Umkreis",
+        "en": "Bathing sites within a radius",
+        "fr": "Sites de baignade dans un rayon",
+        "it": "Zone di balneazione entro un raggio",
+    },
+    "mode_bathing_favorite": {
+        "de": "Einzelne Badestelle favorisieren",
+        "en": "Single favourite bathing site",
+        "fr": "Site de baignade favori",
+        "it": "Zona di balneazione preferita",
+    },
+    "bathing_entry_title": {
+        "de": "Badestellen im Umkreis {radius} km",
+        "en": "Bathing sites within {radius} km",
+        "fr": "Sites de baignade dans un rayon de {radius} km",
+        "it": "Zone di balneazione entro {radius} km",
+    },
     "station_entity_prefix": {
         "de": "Gewässer",
         "en": "Water",
@@ -122,6 +158,35 @@ DANGER_SCALE: dict[str, dict[str, str]] = {
 }
 
 
+# EU Bathing Water Directive (2006/7/EC) quality classes, as used by the FOEN.
+BATHING_QUALITY_TEXT: dict[str, dict[str, str]] = {
+    "de": {
+        "excellent": "Ausgezeichnet",
+        "good": "Gut",
+        "sufficient": "Ausreichend",
+        "poor": "Mangelhaft",
+    },
+    "en": {
+        "excellent": "Excellent",
+        "good": "Good",
+        "sufficient": "Sufficient",
+        "poor": "Poor",
+    },
+    "fr": {
+        "excellent": "Excellente",
+        "good": "Bonne",
+        "sufficient": "Suffisante",
+        "poor": "Insuffisante",
+    },
+    "it": {
+        "excellent": "Eccellente",
+        "good": "Buona",
+        "sufficient": "Sufficiente",
+        "poor": "Scarsa",
+    },
+}
+
+
 def get_language(hass: HomeAssistant) -> str:
     lang = (hass.config.language or "en").lower().split("-")[0]
     return lang if lang in SUPPORTED_LANGUAGES else "en"
@@ -138,3 +203,10 @@ def danger_scale(hass: HomeAssistant) -> dict[str, str]:
     """Return the flood danger level scale for the current language."""
     lang = get_language(hass)
     return DANGER_SCALE.get(lang, DANGER_SCALE["en"])
+
+
+def bathing_quality_text(quality: str | None, hass: HomeAssistant) -> str | None:
+    """Localized label of an EU bathing water quality class."""
+    if not quality:
+        return None
+    return BATHING_QUALITY_TEXT[get_language(hass)].get(quality, quality)

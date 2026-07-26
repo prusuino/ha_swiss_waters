@@ -6,17 +6,29 @@ import logging
 from homeassistant.config_entries import ConfigEntry
 from homeassistant.core import HomeAssistant
 
-from .const import DOMAIN
-from .coordinator import SwissWatersCoordinator
+from .const import CONF_MODE, DOMAIN, MODE_BATHING_FAVORITE, MODE_BATHING_RADIUS
+from .coordinator import SwissBathingCoordinator, SwissWatersCoordinator
 from .dashboard import async_ensure_dashboard
 
 _LOGGER = logging.getLogger(__name__)
 
 PLATFORMS = ["sensor", "geo_location"]
 
+BATHING_MODES = (MODE_BATHING_RADIUS, MODE_BATHING_FAVORITE)
+
+
+def is_bathing_entry(entry: ConfigEntry) -> bool:
+    """Whether this entry tracks bathing sites instead of monitoring stations."""
+    return entry.data.get(CONF_MODE) in BATHING_MODES
+
 
 async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
-    coordinator = SwissWatersCoordinator(hass, entry)
+    if is_bathing_entry(entry):
+        coordinator: SwissBathingCoordinator | SwissWatersCoordinator = (
+            SwissBathingCoordinator(hass, entry)
+        )
+    else:
+        coordinator = SwissWatersCoordinator(hass, entry)
     await coordinator.async_config_entry_first_refresh()
 
     hass.data.setdefault(DOMAIN, {})[entry.entry_id] = coordinator

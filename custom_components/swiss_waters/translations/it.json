@@ -3,7 +3,7 @@
     "step": {
       "user": {
         "title": "Swiss Waters (UFAM)",
-        "description": "Scegli cosa configurare: una panoramica di tutte le stazioni in un raggio, oppure una singola stazione preferita, seguita indipendentemente da una posizione.",
+        "description": "Scegli cosa configurare: stazioni di misurazione (temperatura dell'acqua, livello, portata, pericolo di piena) come panoramica per raggio o stazione preferita — oppure zone di balneazione ufficiali con la qualità dell'acqua di balneazione, più la temperatura di balneazione in tempo reale delle stazioni del lago di Zurigo.",
         "data": {
           "mode": "Modalità"
         }
@@ -23,11 +23,28 @@
         "data": {
           "station": "Stazione"
         }
+      },
+      "bathing_radius": {
+        "title": "Acque svizzere — zone di balneazione",
+        "description": "Ogni zona di balneazione ufficiale entro questo raggio diventa un dispositivo con la sua qualità dell'acqua di balneazione. La classe di qualità è la valutazione stagionale comunicata dai cantoni (direttiva europea sulle acque di balneazione), non una misura in tempo reale. Le stazioni lacustri nel raggio forniscono inoltre la temperatura di balneazione in tempo reale.",
+        "data": {
+          "latitude": "Latitudine",
+          "longitude": "Longitudine",
+          "radius_km": "Raggio"
+        }
+      },
+      "bathing_favorite": {
+        "title": "Acque svizzere — zona di balneazione",
+        "description": "Scegli una zona di balneazione per nome — aggiungi di nuovo l'integrazione per altre preferite. Le stazioni del lago di Zurigo (Tiefenbrunnen, Mythenquai) forniscono la temperatura di balneazione in tempo reale.",
+        "data": {
+          "bathing_site": "Zona di balneazione"
+        }
       }
     },
     "error": {
       "cannot_connect": "Il servizio dati LINDAS non è raggiungibile. Riprovare più tardi.",
-      "no_stations": "Nessuna stazione di misurazione trovata in questo raggio. Provare un raggio più grande."
+      "no_stations": "Nessuna stazione di misurazione trovata in questo raggio. Provare un raggio più grande.",
+      "no_sites": "Nessuna zona di balneazione trovata entro questo raggio. Prova un raggio maggiore."
     },
     "abort": {
       "already_configured": "Questa selezione è già configurata."

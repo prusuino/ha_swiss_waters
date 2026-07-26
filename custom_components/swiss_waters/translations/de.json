@@ -3,7 +3,7 @@
     "step": {
       "user": {
         "title": "Swiss Waters (BAFU)",
-        "description": "Wähle, was eingerichtet werden soll: eine Übersicht aller Stationen in einem Umkreis, oder eine einzelne Favoriten-Station, unabhängig von einem Standort verfolgt.",
+        "description": "Wähle, was eingerichtet werden soll: Messstationen (Wassertemperatur, Pegel, Abfluss, Hochwassergefahr) als Umkreis-Übersicht oder einzelner Favorit — oder offizielle Badestellen mit ihrer Badewasserqualität, dazu die Live-Badewassertemperatur der Zürichsee-Stationen.",
         "data": {
           "mode": "Modus"
         }
@@ -23,11 +23,28 @@
         "data": {
           "station": "Station"
         }
+      },
+      "bathing_radius": {
+        "title": "Gewässer Schweiz — Badestellen",
+        "description": "Jede offizielle Badestelle in diesem Umkreis wird zu einem Gerät mit ihrer Badewasserqualität. Die Qualitätsklasse ist die von den Kantonen gemeldete Saisonbeurteilung (EU-Badegewässerrichtlinie), kein Live-Messwert. Seestationen im Umkreis liefern zusätzlich die Live-Badewassertemperatur.",
+        "data": {
+          "latitude": "Breitengrad",
+          "longitude": "Längengrad",
+          "radius_km": "Umkreis"
+        }
+      },
+      "bathing_favorite": {
+        "title": "Gewässer Schweiz — Badestelle",
+        "description": "Eine Badestelle nach Namen auswählen — Integration erneut hinzufügen für weitere Favoriten. Die Zürichsee-Stationen (Tiefenbrunnen, Mythenquai) liefern die Live-Badewassertemperatur.",
+        "data": {
+          "bathing_site": "Badestelle"
+        }
       }
     },
     "error": {
       "cannot_connect": "Der LINDAS-Datendienst ist nicht erreichbar. Bitte später erneut versuchen.",
-      "no_stations": "Keine Messstationen in diesem Umkreis gefunden. Umkreis vergrössern."
+      "no_stations": "Keine Messstationen in diesem Umkreis gefunden. Umkreis vergrössern.",
+      "no_sites": "Keine Badestellen in diesem Umkreis gefunden. Versuche einen grösseren Umkreis."
     },
     "abort": {
       "already_configured": "Diese Auswahl ist bereits eingerichtet."

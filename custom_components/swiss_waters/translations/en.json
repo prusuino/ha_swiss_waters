@@ -3,7 +3,7 @@
     "step": {
       "user": {
         "title": "Swiss Waters (BAFU)",
-        "description": "Choose what to set up: an overview of all stations within a radius, or a single favorite station tracked independently of a location.",
+        "description": "Choose what to set up: monitoring stations (water temperature, level, discharge, flood danger) as a radius overview or a single favorite — or official bathing sites with their bathing water quality, plus the live bathing water temperature of the Zurich lake stations.",
         "data": {
           "mode": "Mode"
         }
@@ -23,11 +23,28 @@
         "data": {
           "station": "Station"
         }
+      },
+      "bathing_radius": {
+        "title": "Swiss Waters — bathing sites",
+        "description": "Every official bathing site within this radius becomes a device with its bathing water quality. The quality class is the seasonal assessment reported by the cantons (EU Bathing Water Directive), not a live reading. Lake stations within the radius additionally provide the live bathing water temperature.",
+        "data": {
+          "latitude": "Latitude",
+          "longitude": "Longitude",
+          "radius_km": "Radius"
+        }
+      },
+      "bathing_favorite": {
+        "title": "Swiss Waters — bathing site",
+        "description": "Pick one bathing site by name — add the integration again for further favourites. The Zurich lake stations (Tiefenbrunnen, Mythenquai) provide the live bathing water temperature.",
+        "data": {
+          "bathing_site": "Bathing site"
+        }
       }
     },
     "error": {
       "cannot_connect": "The LINDAS data service could not be reached. Please try again later.",
-      "no_stations": "No monitoring stations found within this radius. Try a larger radius."
+      "no_stations": "No monitoring stations found within this radius. Try a larger radius.",
+      "no_sites": "No bathing sites found within this radius. Try a larger radius."
     },
     "abort": {
       "already_configured": "This selection is already configured."

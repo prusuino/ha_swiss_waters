@@ -29,6 +29,12 @@ SOURCE = "swiss_waters"
 async def async_setup_entry(
     hass: HomeAssistant, entry: ConfigEntry, async_add_entities: AddEntitiesCallback
 ) -> None:
+    from . import is_bathing_entry
+
+    if is_bathing_entry(entry):
+        # Bathing sites are stationary devices without map markers for now.
+        return
+
     coordinator: SwissWatersCoordinator = hass.data[DOMAIN][entry.entry_id]
     known_entities: dict[str, SwissWatersStationEvent] = {}
 

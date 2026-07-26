@@ -3,7 +3,7 @@
     "step": {
       "user": {
         "title": "Swiss Waters (OFEV)",
-        "description": "Choisissez ce qui doit être configuré : un aperçu de toutes les stations dans un rayon, ou une station favorite unique, suivie indépendamment d'un emplacement.",
+        "description": "Choisissez ce qu'il faut configurer : stations de mesure (température de l'eau, niveau, débit, danger de crue) en aperçu par rayon ou station favorite — ou sites de baignade officiels avec la qualité de l'eau de baignade, ainsi que la température de baignade en direct des stations du lac de Zurich.",
         "data": {
           "mode": "Mode"
         }
@@ -23,11 +23,28 @@
         "data": {
           "station": "Station"
         }
+      },
+      "bathing_radius": {
+        "title": "Eaux suisses — sites de baignade",
+        "description": "Chaque site de baignade officiel dans ce rayon devient un appareil avec sa qualité d'eau de baignade. La classe de qualité est l'évaluation saisonnière communiquée par les cantons (directive européenne sur les eaux de baignade), pas une mesure en direct. Les stations lacustres du rayon fournissent en plus la température de baignade en direct.",
+        "data": {
+          "latitude": "Latitude",
+          "longitude": "Longitude",
+          "radius_km": "Rayon"
+        }
+      },
+      "bathing_favorite": {
+        "title": "Eaux suisses — site de baignade",
+        "description": "Choisissez un site de baignade par son nom — ajoutez à nouveau l'intégration pour d'autres favoris. Les stations du lac de Zurich (Tiefenbrunnen, Mythenquai) fournissent la température de baignade en direct.",
+        "data": {
+          "bathing_site": "Site de baignade"
+        }
       }
     },
     "error": {
       "cannot_connect": "Le service de données LINDAS est inaccessible. Veuillez réessayer plus tard.",
-      "no_stations": "Aucune station de mesure trouvée dans ce rayon. Essayez un rayon plus grand."
+      "no_stations": "Aucune station de mesure trouvée dans ce rayon. Essayez un rayon plus grand.",
+      "no_sites": "Aucun site de baignade trouvé dans ce rayon. Essayez un rayon plus grand."
     },
     "abort": {
       "already_configured": "Cette sélection est déjà configurée."

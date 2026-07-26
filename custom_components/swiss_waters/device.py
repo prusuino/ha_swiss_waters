@@ -21,3 +21,14 @@ def station_device_info(hass: HomeAssistant, entry: ConfigEntry, station: dict) 
         model=t("model", hass),
         entry_type="service",
     )
+
+
+def bathing_device_info(hass: HomeAssistant, entry: ConfigEntry, site: dict) -> DeviceInfo:
+    """One device per bathing site."""
+    return DeviceInfo(
+        identifiers={(DOMAIN, f"{entry.entry_id}_{site['site_id']}")},
+        name=site.get("name") or site["site_id"],
+        manufacturer=t("manufacturer", hass),
+        model=t("bathing_model", hass),
+        entry_type="service",
+    )
