@@ -122,6 +122,12 @@ STRINGS: dict[str, dict[str, str]] = {
         "fr": "Site de baignade favori",
         "it": "Zona di balneazione preferita",
     },
+    "bathing_view_title": {
+        "de": "Badestellen",
+        "en": "Bathing sites",
+        "fr": "Sites de baignade",
+        "it": "Zone di balneazione",
+    },
     "bathing_entry_title": {
         "de": "Badestellen im Umkreis {radius} km",
         "en": "Bathing sites within {radius} km",

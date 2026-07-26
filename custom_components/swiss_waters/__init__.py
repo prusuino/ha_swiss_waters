@@ -35,7 +35,7 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
     await hass.config_entries.async_forward_entry_setups(entry, PLATFORMS)
 
     try:
-        await async_ensure_dashboard(hass)
+        await async_ensure_dashboard(hass, entry)
     except Exception:  # noqa: BLE001 - dashboard setup must never block integration setup
         _LOGGER.exception("Automatic Swiss Waters dashboard setup failed")
 

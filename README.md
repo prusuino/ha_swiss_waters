@@ -8,6 +8,8 @@
 
 A Home Assistant custom integration for the official Swiss hydrological monitoring network: live **water temperature**, **water level**, **discharge**, and **flood danger levels** of Swiss rivers and lakes, sourced from the **Federal Office for the Environment (FOEN/BAFU)**.
 
+It also covers the official **bathing sites**: their **bathing water quality** per the EU Bathing Water Directive, and the **live bathing water temperature** of the Zurich lake stations.
+
 Want to know whether the Aare is warm enough for a swim, or keep an eye on the flood danger level of the river next to your house — right on your Home Assistant dashboard? That's what this integration does.
 
 ## Background
@@ -37,6 +39,20 @@ Each sensor carries the station ID, water body, measurement time, and distance f
 | 3 | Considerable danger |
 | 4 | High danger |
 | 5 | Very high danger |
+
+## Bathing sites
+
+Two additional setup modes cover the ~215 official Swiss bathing sites — again either as a radius overview or as a single favourite:
+
+| Entity | Description |
+|---|---|
+| `sensor` **Bathing water quality (seasonal assessment)** | Quality class `excellent` / `good` / `sufficient` / `poor` per the EU Bathing Water Directive, computed from the cantonal E. coli and intestinal enterococci samples of the four-season assessment period. Attributes: localised class label, the values of the most recent sample, sample count, canton, distance |
+| `sensor` **Last sampling** | Date of the most recent sample behind that assessment |
+| `sensor` **Bathing water temperature** | Live water temperature of the Zurich lake stations Tiefenbrunnen and Mythenquai, updated every 30 minutes |
+
+**The quality class is not a live reading.** The cantons sample during the season and report to the FOEN afterwards, so the published assessment always lags the running season. The integration makes that explicit: the entity name says "seasonal assessment", the attributes carry a plain-text note and `live: false`, and the separate "Last sampling" sensor shows exactly how old the assessment is. Only the lake temperatures are live.
+
+The automatically created dashboard gains a **"Bathing sites"** view with a tile per site.
 
 ## Language
 

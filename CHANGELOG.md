@@ -1,5 +1,16 @@
 # Changelog
 
+## 1.2.0 — 2026-07-26
+
+Bathing sites: bathing water quality and live lake bathing temperatures.
+
+- **Two new setup modes**: *bathing sites within a radius* and *a single favourite bathing site*, alongside the existing monitoring-station modes
+- One device per official bathing site with its **bathing water quality** class (excellent / good / sufficient / poor) per the EU Bathing Water Directive, computed from the cantonal E. coli and intestinal enterococci samples of the four-season assessment period published by the FOEN
+- The assessment is explicitly **not a live reading**: the entity is named "Bathing water quality (seasonal assessment)", carries a plain-text note and `live: false`, and every site gets a dedicated **"Last sampling"** date sensor
+- **Live bathing water temperature** of the two Zurich lake stations Tiefenbrunnen and Mythenquai (water police Zurich, city of Zurich open data), updated every 30 minutes
+- New "Bathing sites" view on the automatically created dashboard
+- Localised quality labels and setup texts in German, English, French and Italian
+
 ## 1.1.0 — 2026-07-25
 
 - **Setup wizard with two modes**: choose between a *radius overview* (all stations around a location, as before) and *favoriting a single station* picked by name from a searchable dropdown (e.g. "Aare – Bern, Schönau"). Each favorite is its own entry — add the integration again for further favorites, independent of any radius. Radius overviews and favorites combine freely. Existing radius-based entries keep working unchanged.
