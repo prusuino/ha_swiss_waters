@@ -104,6 +104,8 @@ geo_location_sources:
 
 This integration reads live data from the FOEN's hydrological monitoring network via the Swiss federal LINDAS linked-data service. The FOEN requires that the data source is always credited — every entity sets Home Assistant's `attribution` attribute accordingly ("Data: Swiss Federal Office for the Environment FOEN (BAFU)").
 
+Bathing water quality comes from the FOEN's "Qualität der Badegewässer" cube on the same LINDAS service. The bathing water temperatures of the stations Tiefenbrunnen and Mythenquai are published by the **City of Zurich** (water police) as open data under **CC0**, retrieved through the API listed in that dataset; those entities credit both sources.
+
 ## Disclaimer
 
 This integration is provided **as-is, without any warranty**. Data is retrieved from a third-party published source and may be inaccurate, delayed, incomplete, or unavailable. Do not rely on this integration for safety-critical decisions — for official flood warnings, always consult the authorities (e.g. [www.naturgefahren.ch](https://www.naturgefahren.ch)). The author(s) accept **no responsibility or liability** for any damage, loss, incorrect readings, or other issues arising from using this integration, whether it stops working, behaves unexpectedly, or never worked correctly for your setup in the first place.
