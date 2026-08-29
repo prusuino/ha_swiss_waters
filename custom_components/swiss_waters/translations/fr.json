@@ -25,7 +25,7 @@
         }
       },
       "bathing_radius": {
-        "title": "Eaux suisses — sites de baignade",
+        "title": "Swiss Waters (OFEV) — sites de baignade",
         "description": "Chaque site de baignade officiel dans ce rayon devient un appareil avec sa qualité d'eau de baignade. La classe de qualité est l'évaluation saisonnière communiquée par les cantons (directive européenne sur les eaux de baignade), pas une mesure en direct. Les stations lacustres du rayon fournissent en plus la température de baignade en direct.",
         "data": {
           "latitude": "Latitude",
@@ -34,7 +34,7 @@
         }
       },
       "bathing_favorite": {
-        "title": "Eaux suisses — site de baignade",
+        "title": "Swiss Waters (OFEV) — site de baignade",
         "description": "Choisissez un site de baignade par son nom — ajoutez à nouveau l'intégration pour d'autres favoris. Les stations du lac de Zurich (Tiefenbrunnen, Mythenquai) fournissent la température de baignade en direct.",
         "data": {
           "bathing_site": "Site de baignade"

@@ -22,17 +22,17 @@ This integration queries LINDAS for all stations within a configurable radius ar
 
 | Entity | Description |
 |---|---|
-| `sensor.swiss_waters_<station>_temperature` | Water temperature (°C). Only created for stations with a temperature probe (~84 stations). |
-| `sensor.swiss_waters_<station>_water_level` | Water level (m a.s.l.). |
-| `sensor.swiss_waters_<station>_discharge` | Discharge (m³/s). Rivers only — lakes don't report discharge. |
-| `sensor.swiss_waters_<station>_danger_level` | Official flood danger level (1–5), with the localized FOEN danger scale as an attribute. |
-| `geo_location.water_...` (English) / `geo_location.gewasser_...` (German) — see [Addressing the map markers](#addressing-the-map-markers) | One map marker per station. State = distance from the entry's location (km; the home location for a favorite). The map label shows the current water temperature, refreshed on every update; the marker goes unavailable while the data source is unreachable. Attributes: temperature, water level, discharge, danger level, water body, station ID, measurement time. |
+| `sensor.swiss_waters_<station>_temperature_<entry>` | Water temperature (°C). Only created for stations with a temperature probe (~84 stations). |
+| `sensor.swiss_waters_<station>_water_level_<entry>` | Water level (m a.s.l.). |
+| `sensor.swiss_waters_<station>_discharge_<entry>` | Discharge (m³/s). Rivers only — lakes don't report discharge. |
+| `sensor.swiss_waters_<station>_danger_level_<entry>` | Official flood danger level (1–5), with the localized FOEN danger scale as an attribute. |
+| `geo_location.<station name>` — see [Addressing the map markers](#addressing-the-map-markers) | One map marker per station. State = distance from the entry's location (km; the home location for a favorite). The map label shows the current water temperature, refreshed on every update; the marker goes unavailable while the data source is unreachable, and its measured values are blank once the station's latest reading is older than the freshness limit (see [Notes](#notes)). Attributes: temperature, water level, discharge, danger level, water body, station ID, measurement time. |
 
-Each sensor carries the station ID, water body, measurement time, and distance from your configured location as attributes. Data is refreshed every 10 minutes — the same cadence as the source.
+`<station>` is the FOEN station number, `<entry>` the last four characters of the config entry's id in lower case — it keeps the sensors of two entries apart when the same station is part of a favorite and of a radius overview. Home Assistant applies these ids when it registers an entity for the first time; sensors created by a version before 1.5.0 keep the id they already have. Each sensor carries the station ID, water body, measurement time, and distance from your configured location as attributes. Data is refreshed every 10 minutes — the same cadence as the source.
 
 ### Addressing the map markers
 
-The map markers are the one kind of entity without a fixed entity id: Home Assistant derives the object id from the entity's name, and that name is localized. The same station is `geo_location.gewasser_aare_bern_schonau` on a German instance and `geo_location.water_aare_bern_schonau` on an English one (French `geo_location.eaux_…`, Italian `geo_location.acque_…`). A card or template written against one language finds nothing on the other, so do not address markers by entity id — use their `source` attribute, which is always `swiss_waters`:
+A marker's entity id is derived from its station's device name — `geo_location.aare_bern_schonau` for "Aare – Bern, Schönau" — the same in every language. Two things still make that id an unreliable handle: Home Assistant appends a number when the same station is part of two entries (a favorite that also lies inside a radius overview), and markers registered by a version before 1.5.0 keep the localized id they were created with (`geo_location.gewasser_…`, `geo_location.water_…`). So do not address markers by entity id — use their `source` attribute, which is always `swiss_waters`:
 
 - **Map card** — `geo_location_sources` draws every marker of this integration (also the ones hidden from the auto-generated overview), and it can put the live water temperature on the marker label:
 
@@ -56,7 +56,7 @@ The map markers are the one kind of entity without a fixed entity id: Home Assis
 
   This lists the stations in range whose water is currently warmer than 20 °C, in any language.
 
-The sensors are not affected: their ids are built from the station ID (`sensor.swiss_waters_<station>_...`), not from the localized name.
+The sensors are not affected: their ids are built from the station ID and the entry (`sensor.swiss_waters_<station>_..._<entry>`), not from a name.
 
 ### Flood danger levels
 
@@ -76,9 +76,9 @@ Two additional setup modes cover the ~215 official Swiss bathing sites — again
 |---|---|
 | `sensor` **Bathing water quality (seasonal assessment)** | Quality class `excellent` / `good` / `sufficient` / `poor` per the EU Bathing Water Directive, computed from the cantonal E. coli and intestinal enterococci samples of the four-season assessment period. Attributes: localised class label, the values of the most recent sample, sample count, canton, distance |
 | `sensor` **Last sampling** | Date of the most recent sample behind that assessment |
-| `sensor` **Bathing water temperature** | Live water temperature of the Zurich lake stations Tiefenbrunnen and Mythenquai, updated every 30 minutes |
+| `sensor` **Bathing water temperature** | Live water temperature of the Zurich lake stations Tiefenbrunnen and Mythenquai, updated every 30 minutes; unavailable once the newest reading served by the community API is older than 6 hours (the API often lags the station by a few hours) |
 
-**The quality class is not a live reading.** The cantons sample during the season and report to the FOEN afterwards, so the published assessment always lags the running season. The integration makes that explicit: the entity name says "seasonal assessment", the attributes carry a plain-text note and `live: false`, and the separate "Last sampling" sensor shows exactly how old the assessment is. Only the lake temperatures are live.
+**The quality class is not a live reading.** The cantons sample during the season and report to the FOEN afterwards, so the published assessment always lags the running season. The integration makes that explicit: the entity name says "seasonal assessment", the attributes carry a plain-text note and `live: false`, and the separate "Last sampling" sensor shows exactly how old the assessment is. Only the lake temperatures are live. A site without a sample in the four-season assessment period has no assessment: its quality and last-sampling sensors are unavailable until the FOEN publishes one.
 
 The [dashboard strategy](#dashboard) gives every site a section of its own; a tile card per site works just as well if you build your own dashboard — see [Building it yourself](#building-it-yourself) for an example.
 
@@ -109,7 +109,9 @@ Until the integration shows up in the HACS search, the button above adds it as a
 2. Search for **"Swiss Waters (BAFU)"** and choose a mode:
    - **Radius overview:** all stations within a radius around a location (latitude/longitude default to your Home Assistant home location).
    - **Favorite a single station:** pick one station by name from the searchable dropdown (e.g. "Aare – Bern, Schönau") — independent of any location, useful for your favorite swimming river.
-3. Done. Add the integration again for further favorites or another radius — every entry is independent, and both modes combine freely.
+   - **Bathing sites within a radius:** every official bathing site around a location, plus the Zurich lake stations when they lie inside the radius. The wizard checks that the radius contains at least one site.
+   - **Single favourite bathing site:** one bathing site picked by name — the Zurich lake stations Tiefenbrunnen and Mythenquai are in that list as well.
+3. Done. Add the integration again for further favorites or another radius — every entry is independent, and all modes combine freely.
 
 ## Dashboard
 
@@ -208,21 +210,21 @@ geo_location_sources:
 default_zoom: 9
 ```
 
-Bathing sites have no map marker; two **Tile cards** per site show the quality class and the sampling date at a glance. The entity IDs follow the pattern `sensor.swiss_waters_bathing_<site>_quality` / `_last_sample` / `_temperature` — copy the exact IDs from the entity list of the site's device (Settings → Devices & services → Swiss Waters):
+Bathing sites have no map marker; two **Tile cards** per site show the quality class and the sampling date at a glance. The entity IDs follow the pattern `sensor.swiss_waters_bathing_<site>_quality_<entry>` / `_last_sample_<entry>` / `_temperature_<entry>` (`<entry>` = the last four characters of the config entry's id; sites set up before 1.5.0 keep their ids without it) — copy the exact IDs from the entity list of the site's device (Settings → Devices & services → Swiss Waters):
 
 ```yaml
 type: tile
-entity: sensor.swiss_waters_bathing_<site>_quality
+entity: sensor.swiss_waters_bathing_<site>_quality_<entry>
 name: <Site name> – quality
 ```
 
 ```yaml
 type: tile
-entity: sensor.swiss_waters_bathing_<site>_last_sample
+entity: sensor.swiss_waters_bathing_<site>_last_sample_<entry>
 name: <Site name> – last sample
 ```
 
-The Lake Zurich temperature stations provide only `sensor.swiss_waters_bathing_<site>_temperature` (no quality class or sampling date).
+The Lake Zurich temperature stations provide only `sensor.swiss_waters_bathing_<site>_temperature_<entry>` (no quality class or sampling date).
 
 The integration never creates or modifies a dashboard on your behalf — the strategy above is rendered by your browser and stores nothing, and your dashboards stay entirely under your own control.
 
@@ -230,9 +232,10 @@ The integration never creates or modifies a dashboard on your behalf — the str
 
 ## Notes
 
-- Stations that newly fall within your radius (the network changes rarely) are picked up after a reload or restart of the integration.
+- Stations that newly fall within your radius (the network changes rarely) get their sensors and their map marker with the next update — no reload needed. A measure a station starts reporting later is picked up the same way.
 - Not every station reports every measure: lake stations have no discharge, and only about a third of the network has temperature probes. Sensors are only created for measures a station actually reports.
-- If LINDAS is unreachable, entities become unavailable rather than showing stale data.
+- Stations and bathing sites that disappear from the source keep their entities, which turn unavailable; if a station is gone for good, delete its device under **Settings → Devices & services**.
+- If LINDAS is unreachable, entities become unavailable rather than showing stale data. The same applies to a reading that is no longer current: a FOEN reading or a Zurich lake temperature older than **6 hours** makes its sensors unavailable and blanks the measured values on the map marker — the measurement time stays visible as an attribute. The Zurich temperatures come from a community-run API that often serves its newest record a few hours behind the station; while it lags beyond the limit, the temperature sensor is unavailable rather than showing an old reading as live. A bathing site without a sample in the four-season assessment period has no assessment, and its quality and last-sampling sensors are unavailable.
 - This integration is unofficial and not affiliated with, endorsed by, or supported by the FOEN. It only reads their published data via the official LINDAS service.
 
 ## Data source & license
@@ -240,6 +243,8 @@ The integration never creates or modifies a dashboard on your behalf — the str
 This integration reads live data from the FOEN's hydrological monitoring network via the Swiss federal LINDAS linked-data service. The FOEN requires that the data source is always credited — every entity sets Home Assistant's `attribution` attribute accordingly ("Data: Swiss Federal Office for the Environment FOEN (BAFU)").
 
 Bathing water quality comes from the FOEN's "Qualität der Badegewässer" cube on the same LINDAS service. The bathing water temperatures of the stations Tiefenbrunnen and Mythenquai are published by the **City of Zurich** (water police) as open data under **CC0**, retrieved through the API listed in that dataset; those entities credit both sources.
+
+Three hosts are contacted, all over HTTPS: `lindas.admin.ch` (hydrological data) and `environment.ld.admin.ch` (bathing water quality), both run by the Swiss federal administration, and `tecdottir.metaodi.ch`, a community-run API — not a federal service — that republishes the City of Zurich lake data. Every request consists of a fixed query or a station code; the location and radius you configure are applied locally and never leave your Home Assistant instance.
 
 ## Disclaimer
 

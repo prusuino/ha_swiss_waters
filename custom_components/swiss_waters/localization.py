@@ -128,12 +128,6 @@ STRINGS: dict[str, dict[str, str]] = {
         "fr": "Sites de baignade dans un rayon de {radius} km",
         "it": "Zone di balneazione entro {radius} km",
     },
-    "station_entity_prefix": {
-        "de": "Gewässer",
-        "en": "Water",
-        "fr": "Eaux",
-        "it": "Acque",
-    },
 }
 
 # Official FOEN flood danger levels (1-5), see

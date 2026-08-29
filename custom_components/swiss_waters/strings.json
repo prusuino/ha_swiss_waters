@@ -25,7 +25,7 @@
         }
       },
       "bathing_radius": {
-        "title": "Swiss Waters — bathing sites",
+        "title": "Swiss Waters (BAFU) — bathing sites",
         "description": "Every official bathing site within this radius becomes a device with its bathing water quality. The quality class is the seasonal assessment reported by the cantons (EU Bathing Water Directive), not a live reading. Lake stations within the radius additionally provide the live bathing water temperature.",
         "data": {
           "latitude": "Latitude",
@@ -34,7 +34,7 @@
         }
       },
       "bathing_favorite": {
-        "title": "Swiss Waters — bathing site",
+        "title": "Swiss Waters (BAFU) — bathing site",
         "description": "Pick one bathing site by name — add the integration again for further favourites. The Zurich lake stations (Tiefenbrunnen, Mythenquai) provide the live bathing water temperature.",
         "data": {
           "bathing_site": "Bathing site"

@@ -1,7 +1,18 @@
 # Changelog
 
-## 1.4.1 — 2026-08-29
+## 1.5.0 — 2026-08-29
 
+Review follow-ups. Nothing to do on update: every existing entity keeps its entity id, unique ids are unchanged, and no configuration change is needed.
+
+- **Fixed: sensor entity ids are scoped to the config entry.** A sensor registered from this version on is suggested as `sensor.swiss_waters_<station>_<measure>_<entry>` (`<entry>` = the last four characters of the config entry id, lower case), so a station that is part of a favorite *and* of a radius overview gets two distinct ids instead of a `_2` suffix on the second one. Home Assistant applies a suggested id only when it registers an entity for the first time — the sensors you already have keep the id they have.
+- **Changed: map markers are named after their station.** A marker's name is now the station's device name ("Aare – Bern, Schönau") without the localized "Water"/"Gewässer" prefix, and a marker registered from this version on gets a language-neutral id (`geo_location.aare_bern_schonau`). Existing markers keep their id; the README still recommends selecting markers by `source: swiss_waters`.
+- **Fixed: stale readings are no longer shown as current.** A FOEN reading or a Zurich lake temperature older than 6 hours makes its sensors unavailable and blanks the measured values on the map marker; the measurement time stays visible as an attribute. The limit for the lake temperatures allows for the community API, which often serves its newest record a few hours behind the station; while it lags beyond the limit, the temperature sensor is unavailable rather than showing an old reading as live. A bathing site without a sample in the four-season assessment period has no assessment — its quality and last-sampling sensors are unavailable instead of unknown.
+- Fixed: the published version of the FOEN bathing water dataset is resolved again every 24 hours and whenever a query comes back empty, so a newly published dataset is picked up without a restart; an empty dataset is reported in the log once.
+- Fixed: new stations, new bathing sites and measures a station starts reporting later get their sensors with the next update — a reload is no longer needed. Entities of stations that disappear from the source are kept and turn unavailable.
+- Fixed: setting up a bathing radius now checks that at least one bathing site (or Zurich lake station) lies inside the radius and says so otherwise; the favourite bathing site picker reports an unreachable LINDAS instead of silently offering only the two Zurich stations.
+- Changed: a LINDAS outage during setup is logged as a warning without a traceback, an unreadable answer from a data service is reported as such instead of as "unreachable", and the setup wizard fetches the station and site lists once per run instead of twice.
+- Changed: the setup wizard's step titles use the same product name in every language.
+- Docs: SECURITY.md and the README name the three hosts the integration talks to — including the community-run `tecdottir.metaodi.ch` API for the Zurich lake data — and state that your location never leaves your instance; the README's setup section lists all four modes.
 - Updated the bundled dashboard-strategy core to 1.1.1: `map: false` now also removes a map section inside a view, `max_columns` is honoured in the view-strategy flavour, and a view's header is kept when the strategy fills a single view. No change to the integration itself.
 
 ## 1.4.0 — 2026-08-29

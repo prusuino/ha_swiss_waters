@@ -10,7 +10,9 @@ Two sources, both official open data:
   classification refers to the most recent season with samples.
 * Bathing water temperature — the two lake stations of the Zurich water police
   (Tiefenbrunnen, Mythenquai), published by the city of Zurich as open data
-  (CC0) and updated every 10 minutes.
+  (CC0) and updated every 10 minutes, read through the community-run API
+  listed with the dataset (tecdottir.metaodi.ch — a third-party host, not a
+  federal service).
 
 Classification follows the EU Bathing Water Directive (2006/7/EC, Annex I) for
 inland waters, which Switzerland applies as well: percentiles of the
@@ -18,6 +20,7 @@ log-normally distributed sample values per season.
 """
 from __future__ import annotations
 
+import logging
 import math
 import statistics
 from datetime import date
@@ -26,12 +29,15 @@ from homeassistant.core import HomeAssistant
 from homeassistant.helpers.aiohttp_client import async_get_clientsession
 
 from .const import (
+    BATHING_ASSESSMENT_YEARS,
     BATHING_CUBE_BASE,
     BATHING_SITE_TERM_SET,
     BATHING_TEMP_STATIONS,
     BATHING_TEMP_URL,
     ENVIRONMENT_QUERY_URL,
 )
+
+_LOGGER = logging.getLogger(__name__)
 
 # EU Bathing Water Directive 2006/7/EC, Annex I — inland waters (cfu/100 ml).
 # excellent/good use the 95th percentile, sufficient the 90th percentile.
@@ -158,7 +164,7 @@ async def async_fetch_quality(hass: HomeAssistant, cube: str) -> dict[str, dict]
     lags the running season, so the newest sample date is exposed as an
     attribute to make the age of the assessment visible.
     """
-    since = f"{date.today().year - 4}-01-01"
+    since = f"{date.today().year - BATHING_ASSESSMENT_YEARS}-01-01"
     bindings = await _sparql(
         hass,
         _MEASUREMENTS_SPARQL.format(
@@ -210,7 +216,8 @@ async def async_fetch_temperatures(hass: HomeAssistant) -> dict[str, dict]:
             ) as resp:
                 resp.raise_for_status()
                 payload = await resp.json(content_type=None)
-        except Exception:  # noqa: BLE001 - a station outage must not fail the update
+        except Exception as err:  # noqa: BLE001 - a station outage must not fail the update
+            _LOGGER.debug("Zurich lake station %s unavailable: %s", code, err)
             continue
         records = payload.get("result") or []
         if not records:

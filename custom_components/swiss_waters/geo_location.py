@@ -7,6 +7,14 @@ measured values change every 10 minutes, so the entities subscribe to the
 coordinator and refresh their attributes on every update. Their availability
 follows the coordinator as well: while the source is unreachable a marker is
 unavailable, like the station's sensors, instead of keeping its last label.
+
+Lifecycle: a marker is added as soon as its station shows up in the
+coordinator data, also between restarts (the sensor platform does the same).
+Markers are never removed from here on purpose — the network changes rarely,
+a station that drops out of the feed is usually back after maintenance, and
+its marker reads unavailable meanwhile. Removing a station that is gone for
+good is left to the user (delete the device), so nothing the user customised
+on the entity is thrown away by an automatic clean-up.
 """
 from __future__ import annotations
 
@@ -21,7 +29,6 @@ from homeassistant.helpers.entity_platform import AddEntitiesCallback
 from .const import ATTRIBUTION, DOMAIN
 from .coordinator import SwissWatersCoordinator
 from .device import station_device_info
-from .localization import t
 
 _LOGGER = logging.getLogger(__name__)
 SOURCE = "swiss_waters"
@@ -65,7 +72,12 @@ class SwissWatersStationEvent(GeolocationEvent):
     _attr_source = SOURCE
     _attr_attribution = ATTRIBUTION
     _attr_unit_of_measurement = UnitOfLength.KILOMETERS
-    _attr_has_entity_name = False
+    # The marker has no name of its own: it carries the station's device
+    # name ("Aare – Bern, Schönau"), so the object id Home Assistant derives
+    # for a newly registered marker is the language-neutral device name
+    # instead of a localized prefix. Existing markers keep their id.
+    _attr_has_entity_name = True
+    _attr_name = None
     _attr_icon = "mdi:waves"
     # Hidden from Home Assistant's auto-generated default dashboard map (which
     # otherwise draws every geo_location entity in the system) — still shown
@@ -85,10 +97,6 @@ class SwissWatersStationEvent(GeolocationEvent):
         self._coordinator = coordinator
         self._station_id = station["station_id"]
         self._attr_unique_id = f"{DOMAIN}_{entry.entry_id}_{self._station_id}"
-        prefix = t("station_entity_prefix", hass)
-        water = station.get("water_body")
-        name = station.get("name") or self._station_id
-        self._attr_name = f"{prefix} {water} – {name}" if water else f"{prefix} {name}"
         self._attr_latitude = station["latitude"]
         self._attr_longitude = station["longitude"]
         self._attr_distance = station["distance_km"]
@@ -118,13 +126,18 @@ class SwissWatersStationEvent(GeolocationEvent):
 
     @property
     def extra_state_attributes(self):
+        """Measured values of the latest reading — blank once that reading is
+        older than the freshness limit, so the map label never shows a stale
+        temperature as current. The station itself stays on the map: its
+        position is valid, it just has nothing current to report."""
         station = self._station()
-        temperature = station.get("temperature")
+        fresh = station.get("fresh", False)
+        temperature = station.get("temperature") if fresh else None
         return {
             "temperature": round(temperature, 1) if temperature is not None else None,
-            "water_level": station.get("water_level"),
-            "discharge": station.get("discharge"),
-            "danger_level": station.get("danger_level"),
+            "water_level": station.get("water_level") if fresh else None,
+            "discharge": station.get("discharge") if fresh else None,
+            "danger_level": station.get("danger_level") if fresh else None,
             "water_body": station.get("water_body"),
             "station_id": self._station_id,
             "measurement_time": station.get("measurement_time"),

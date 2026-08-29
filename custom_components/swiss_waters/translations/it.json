@@ -25,7 +25,7 @@
         }
       },
       "bathing_radius": {
-        "title": "Acque svizzere — zone di balneazione",
+        "title": "Swiss Waters (UFAM) — zone di balneazione",
         "description": "Ogni zona di balneazione ufficiale entro questo raggio diventa un dispositivo con la sua qualità dell'acqua di balneazione. La classe di qualità è la valutazione stagionale comunicata dai cantoni (direttiva europea sulle acque di balneazione), non una misura in tempo reale. Le stazioni lacustri nel raggio forniscono inoltre la temperatura di balneazione in tempo reale.",
         "data": {
           "latitude": "Latitudine",
@@ -34,7 +34,7 @@
         }
       },
       "bathing_favorite": {
-        "title": "Acque svizzere — zona di balneazione",
+        "title": "Swiss Waters (UFAM) — zona di balneazione",
         "description": "Scegli una zona di balneazione per nome — aggiungi di nuovo l'integrazione per altre preferite. Le stazioni del lago di Zurigo (Tiefenbrunnen, Mythenquai) forniscono la temperatura di balneazione in tempo reale.",
         "data": {
           "bathing_site": "Zona di balneazione"

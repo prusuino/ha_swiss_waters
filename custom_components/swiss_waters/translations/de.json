@@ -25,7 +25,7 @@
         }
       },
       "bathing_radius": {
-        "title": "Gewässer Schweiz — Badestellen",
+        "title": "Swiss Waters (BAFU) — Badestellen",
         "description": "Jede offizielle Badestelle in diesem Umkreis wird zu einem Gerät mit ihrer Badewasserqualität. Die Qualitätsklasse ist die von den Kantonen gemeldete Saisonbeurteilung (EU-Badegewässerrichtlinie), kein Live-Messwert. Seestationen im Umkreis liefern zusätzlich die Live-Badewassertemperatur.",
         "data": {
           "latitude": "Breitengrad",
@@ -34,7 +34,7 @@
         }
       },
       "bathing_favorite": {
-        "title": "Gewässer Schweiz — Badestelle",
+        "title": "Swiss Waters (BAFU) — Badestelle",
         "description": "Eine Badestelle nach Namen auswählen — Integration erneut hinzufügen für weitere Favoriten. Die Zürichsee-Stationen (Tiefenbrunnen, Mythenquai) liefern die Live-Badewassertemperatur.",
         "data": {
           "bathing_site": "Badestelle"
