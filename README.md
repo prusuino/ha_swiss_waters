@@ -52,7 +52,7 @@ Two additional setup modes cover the ~215 official Swiss bathing sites — again
 
 **The quality class is not a live reading.** The cantons sample during the season and report to the FOEN afterwards, so the published assessment always lags the running season. The integration makes that explicit: the entity name says "seasonal assessment", the attributes carry a plain-text note and `live: false`, and the separate "Last sampling" sensor shows exactly how old the assessment is. Only the lake temperatures are live.
 
-A tile card per site works well for a dashboard — see [Showing the data on a dashboard](#showing-the-data-on-a-dashboard) for an example.
+The [dashboard strategy](#dashboard) gives every site a section of its own; a tile card per site works just as well if you build your own dashboard — see [Building it yourself](#building-it-yourself) for an example.
 
 ## Language
 
@@ -79,7 +79,85 @@ Entity names, device info, and the config flow adapt automatically to your Home 
    - **Favorite a single station:** pick one station by name from the searchable dropdown (e.g. "Aare – Bern, Schönau") — independent of any location, useful for your favorite swimming river.
 3. Done. Add the integration again for further favorites or another radius — every entry is independent, and both modes combine freely.
 
-### Showing the data on a dashboard
+## Dashboard
+
+The integration ships a **dashboard strategy**: a recipe Home Assistant renders in the browser, rather than a dashboard written into your configuration. Nothing is stored, nothing is overwritten, and the result follows your setup — add a station or a bathing site and it appears on the next page load; delete an entry and it is gone, with no leftover card.
+
+### Adding the strategy as a resource
+
+The integration serves the strategy file, but registering it as a Lovelace resource is left to you — the resource list is part of your dashboard configuration, and an integration has no business writing into it. It is a one-time step:
+
+**Settings → Dashboards → ⋮ (top right) → Resources → + Add resource**
+
+| Field | Value |
+|---|---|
+| URL | `/swiss_waters_files/swiss-waters-dashboard.js` |
+| Resource type | JavaScript module |
+
+Then reload the page (Ctrl/Cmd+Shift+R). The *Resources* entry is only shown when **Advanced mode** is enabled in your user profile (click your name at the bottom of the sidebar).
+
+### Creating the dashboard
+
+1. **Settings → Dashboards → + Add dashboard → New dashboard from scratch**, give it a name.
+2. Open it, then **✏️ (edit) → ⋮ → Raw configuration editor**.
+3. Replace the entire content with:
+
+```yaml
+strategy:
+  type: custom:swiss-waters
+views: []
+```
+
+4. Save.
+
+You get:
+
+- a **Map** view — every monitoring station on a full-screen map, each marker labeled with its current water temperature (only shown when station markers exist; a setup with bathing sites alone has none);
+- a **Stations** view — one section per monitoring station with its water temperature, water level, discharge and flood danger level as tiles (only the measures the station reports);
+- a **Bathing sites** view — one section per bathing site with its quality class and the date of the last sampling, or the live water temperature for the Lake Zurich stations.
+
+View titles follow your Home Assistant language (German, English, French, Italian).
+
+The strategy also appears under **+ Add dashboard** as *Swiss Waters*, which does the same thing without the raw editor.
+
+Everything the strategy produces is a normal Home Assistant dashboard. If you would rather arrange things yourself, build your own dashboard with the entities above — see [Building it yourself](#building-it-yourself). The strategy is an offer, not a requirement.
+
+### Adjusting the strategy
+
+A strategy dashboard has no card editor — the layout is generated fresh on every load. You still have two ways to shape it without giving that up:
+
+**Options.** Anything you add under `strategy:` is passed to the recipe:
+
+```yaml
+strategy:
+  type: custom:swiss-waters
+  title: My title
+  max_columns: 3
+views: []
+```
+
+| Option | Effect |
+|---|---|
+| `title` | dashboard title |
+| `max_columns` | column count of the generated section views |
+| `map: false` | leave out the full-screen map view |
+
+**One view inside your own dashboard.** Instead of a separate dashboard, let the strategy fill a single view of one you already have. Open your dashboard's raw configuration editor and add a view:
+
+```yaml
+views:
+  - title: Home
+    # ... your own cards ...
+  - title: Swiss Waters
+    strategy:
+      type: custom:swiss-waters
+```
+
+That view is regenerated like the full dashboard is, so new config entries still appear by themselves, while every other view stays yours to edit. The same options work here too.
+
+> **Take control** (⋮ menu) turns a strategy dashboard into a static one you can edit card by card — but it is one-way: the dashboard stops following your config entries from then on. Prefer the two approaches above.
+
+### Building it yourself
 
 Every monitoring station becomes a `geo_location` entity, so Home Assistant's **built-in Map card** can display them — no custom card and no extra HACS dependency required. The card can label each marker with the station's current water temperature out of the box, via its `label_mode: attribute` option.
 
@@ -114,9 +192,9 @@ name: <Site name> – last sample
 
 The Lake Zurich temperature stations provide only `sensor.swiss_waters_bathing_<site>_temperature` (no quality class or sampling date).
 
-The integration deliberately does not create or modify any dashboard on your behalf — your dashboards stay entirely under your own control.
+The integration never creates or modifies a dashboard on your behalf — the strategy above is rendered by your browser and stores nothing, and your dashboards stay entirely under your own control.
 
-> **Note:** the station entities are hidden by default so they don't flood Home Assistant's auto-generated overview map. This only affects entities the first time they are registered; the Map card above finds them regardless, because it selects them by source.
+> **Note:** the station entities are hidden by default so they don't flood Home Assistant's auto-generated overview map. This only affects entities the first time they are registered; the Map card — in the strategy as well as in the snippet above — finds them regardless, because it selects them by source.
 
 ## Notes
 

@@ -1,11 +1,16 @@
 """Swiss Waters (BAFU) integration."""
 from __future__ import annotations
 
+import logging
+
 from homeassistant.config_entries import ConfigEntry
 from homeassistant.core import HomeAssistant
 
 from .const import CONF_MODE, DOMAIN, MODE_BATHING_FAVORITE, MODE_BATHING_RADIUS
 from .coordinator import SwissBathingCoordinator, SwissWatersCoordinator
+from .frontend import async_serve_frontend
+
+_LOGGER = logging.getLogger(__name__)
 
 PLATFORMS = ["sensor", "geo_location"]
 
@@ -18,6 +23,11 @@ def is_bathing_entry(entry: ConfigEntry) -> bool:
 
 
 async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
+    try:
+        await async_serve_frontend(hass)
+    except Exception:  # noqa: BLE001 - serving the strategy must never block integration setup
+        _LOGGER.exception("Serving the bundled dashboard strategy failed")
+
     if is_bathing_entry(entry):
         coordinator: SwissBathingCoordinator | SwissWatersCoordinator = (
             SwissBathingCoordinator(hass, entry)

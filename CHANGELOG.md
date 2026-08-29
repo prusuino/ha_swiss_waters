@@ -1,5 +1,21 @@
 # Changelog
 
+## 1.3.1 — 2026-08-29
+
+The dashboard that 1.3.0 removed has a replacement: a **dashboard strategy**. A strategy is a recipe Home Assistant renders in the browser at display time — it stores nothing, overwrites nothing, and reflects your current setup on every page load. Add a station or a bathing site and its section appears; delete an entry and it is gone, with no stale card left behind. It is entirely optional, and existing dashboards are not touched.
+
+- **New: dashboard strategy `custom:swiss-waters`.** It renders a full-screen **Map** of the monitoring stations (markers labeled with the water temperature; the view is left out when no station markers exist, so a bathing-only setup gets no empty map), a **Stations** view with one section per station (water temperature, water level, discharge and flood danger level as tiles — only the measures the station reports), and a **Bathing sites** view with one section per site (quality class and last sampling, or the live water temperature of the Lake Zurich stations). It also appears under **Settings → Dashboards → + Add dashboard**, can fill a single view of a dashboard you already have, and honours `title`, `max_columns` and `map: false` as options. Setup is in the README; in short, a new dashboard with:
+
+  ```yaml
+  strategy:
+    type: custom:swiss-waters
+  views: []
+  ```
+
+- **One-time step: register the resource.** The integration serves the file at `/swiss_waters_files/swiss-waters-dashboard.js` but does not add it to your Lovelace resources — the resource list is part of your dashboard configuration, and the integration stays out of it. Add it once under **Settings → Dashboards → ⋮ → Resources** with type *JavaScript module*, then reload the page.
+- Changed: the minimum Home Assistant version is now **2025.4.0** (previously 2024.1.0). Serving the file uses the static-path API from 2024.7, and the generated dashboard relies on the sections view with heading cards and `grid_options` (2024.10/2024.11) and on the map card's attribute labels for geo-location sources (2025.4) — the same feature the README's manual map card has always used.
+- Added: `http` is declared as a dependency in the manifest, so the static path is registered when the integration loads.
+
 ## 1.3.0 — 2026-08-29
 
 **Breaking:** the integration no longer creates a "Swiss Waters" dashboard for you, and no longer adds a "Bathing sites" view to it. It wrote directly into Home Assistant's internal Lovelace storage, which could silently discard the entry again, recreated the dashboard even after a user had deliberately deleted it, and appended the bathing view to a dashboard the user may have customised. Dashboards are now left entirely to the user. An existing dashboard from an earlier version is kept and kept working — nothing is deleted on update. The README explains how to add the built-in Map card and a tile per bathing site; the map card configuration is unchanged, so an existing dashboard needs no adjustment.
