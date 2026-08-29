@@ -1,5 +1,9 @@
 # Changelog
 
+## 1.4.1 — 2026-08-29
+
+- Updated the bundled dashboard-strategy core to 1.1.1: `map: false` now also removes a map section inside a view, `max_columns` is honoured in the view-strategy flavour, and a view's header is kept when the strategy fills a single view. No change to the integration itself.
+
 ## 1.4.0 — 2026-08-29
 
 The dashboard that 1.3.0 removed has a replacement: a **dashboard strategy**. A strategy is a recipe Home Assistant renders in the browser at display time — it stores nothing, overwrites nothing, and reflects your current setup on every page load. Add a station or a bathing site and its section appears; delete an entry and it is gone, with no stale card left behind. It is entirely optional, and existing dashboards are not touched.
