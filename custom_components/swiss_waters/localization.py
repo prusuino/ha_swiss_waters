@@ -1,8 +1,8 @@
-"""Runtime string localization (entity names, device info, dashboard content).
+"""Runtime string localization (entity names, device info, danger-level scale).
 
 Home Assistant's built-in translation system (strings.json / translations/*.json)
-only covers config/options flow text. Entity names, device info, the
-auto-generated dashboard, and the danger-level scale are set directly by this
+only covers config/options flow text. Entity names, device info and the
+danger-level scale are set directly by this
 integration's Python code and are not covered by that mechanism, so we do our
 own minimal lookup here, keyed by hass.config.language. Falls back to English
 for any language we don't have strings for.
@@ -122,12 +122,6 @@ STRINGS: dict[str, dict[str, str]] = {
         "fr": "Site de baignade favori",
         "it": "Zona di balneazione preferita",
     },
-    "bathing_view_title": {
-        "de": "Badestellen",
-        "en": "Bathing sites",
-        "fr": "Sites de baignade",
-        "it": "Zone di balneazione",
-    },
     "bathing_entry_title": {
         "de": "Badestellen im Umkreis {radius} km",
         "en": "Bathing sites within {radius} km",
@@ -139,18 +133,6 @@ STRINGS: dict[str, dict[str, str]] = {
         "en": "Water",
         "fr": "Eaux",
         "it": "Acque",
-    },
-    "dashboard_title": {
-        "de": "Gewässer Schweiz",
-        "en": "Swiss Waters",
-        "fr": "Eaux suisses",
-        "it": "Acque svizzere",
-    },
-    "map_card_title": {
-        "de": "BAFU Messstationen (Beschriftung: Wassertemperatur °C)",
-        "en": "FOEN monitoring stations (label: water temperature °C)",
-        "fr": "Stations OFEV (étiquette : température de l'eau °C)",
-        "it": "Stazioni UFAM (etichetta: temperatura dell'acqua °C)",
     },
 }
 

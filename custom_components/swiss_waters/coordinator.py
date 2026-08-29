@@ -231,9 +231,15 @@ class SwissBathingCoordinator(DataUpdateCoordinator[dict]):
                 self._cube = await async_latest_cube(self.hass)
             all_sites = await async_fetch_sites(self.hass)
             quality = await async_fetch_quality(self.hass, self._cube)
+            # Live lake temperatures are added when they fall inside the radius
+            # or were picked as favourites.
+            temperatures = await async_fetch_temperatures(self.hass)
         except Exception as err:
             raise UpdateFailed(f"FOEN bathing water data unreachable: {err}") from err
 
+        # Records without usable coordinates never get here: async_fetch_sites
+        # drops them while parsing, and the temperature stations carry fixed
+        # coordinates from const.py.
         sites: dict[str, dict] = {}
         for site_id, site in all_sites.items():
             distance = _haversine_km(lat, lon, site["latitude"], site["longitude"])
@@ -246,9 +252,6 @@ class SwissBathingCoordinator(DataUpdateCoordinator[dict]):
                 "distance_km": round(distance, 1),
             }
 
-        # Live lake temperatures are added when they fall inside the radius or
-        # were picked as favourites.
-        temperatures = await async_fetch_temperatures(self.hass)
         for station in temperatures.values():
             site_id = station["site_id"]
             distance = _haversine_km(lat, lon, station["latitude"], station["longitude"])

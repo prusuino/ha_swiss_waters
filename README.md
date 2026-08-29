@@ -26,7 +26,7 @@ This integration queries LINDAS for all stations within a configurable radius ar
 | `sensor.swiss_waters_<station>_water_level` | Water level (m a.s.l.). |
 | `sensor.swiss_waters_<station>_discharge` | Discharge (m³/s). Rivers only — lakes don't report discharge. |
 | `sensor.swiss_waters_<station>_danger_level` | Official flood danger level (1–5), with the localized FOEN danger scale as an attribute. |
-| `geo_location.*` | One map marker per station, labeled with the current water temperature on the integration's map card. |
+| `geo_location.*` | One map marker per station, labeled with the current water temperature on a Map card (see below). |
 
 Each sensor carries the station ID, water body, measurement time, and distance from your configured location as attributes. Data is refreshed every 10 minutes — the same cadence as the source.
 
@@ -52,11 +52,11 @@ Two additional setup modes cover the ~215 official Swiss bathing sites — again
 
 **The quality class is not a live reading.** The cantons sample during the season and report to the FOEN afterwards, so the published assessment always lags the running season. The integration makes that explicit: the entity name says "seasonal assessment", the attributes carry a plain-text note and `live: false`, and the separate "Last sampling" sensor shows exactly how old the assessment is. Only the lake temperatures are live.
 
-The automatically created dashboard gains a **"Bathing sites"** view with a tile per site.
+A tile card per site works well for a dashboard — see [Showing the data on a dashboard](#showing-the-data-on-a-dashboard) for an example.
 
 ## Language
 
-Entity names, device info, the auto-generated dashboard, and the config flow adapt automatically to your Home Assistant language setting — German, English, French, and Italian are supported, with English as the fallback.
+Entity names, device info, and the config flow adapt automatically to your Home Assistant language setting — German, English, French, and Italian are supported, with English as the fallback.
 
 ## Installation
 
@@ -79,11 +79,15 @@ Entity names, device info, the auto-generated dashboard, and the config flow ada
    - **Favorite a single station:** pick one station by name from the searchable dropdown (e.g. "Aare – Bern, Schönau") — independent of any location, useful for your favorite swimming river.
 3. Done. Add the integration again for further favorites or another radius — every entry is independent, and both modes combine freely.
 
-### Automatic dashboard
+### Showing the data on a dashboard
 
-On first setup, the integration automatically creates a **"Swiss Waters"** dashboard (shown in the sidebar, title localized to your HA language) with a full-screen native Home Assistant Map card, already configured to label each station's marker with its current water temperature. This only happens once: if you later customize or delete that dashboard yourself, the integration won't touch it again.
+Every monitoring station becomes a `geo_location` entity, so Home Assistant's **built-in Map card** can display them — no custom card and no extra HACS dependency required. The card can label each marker with the station's current water temperature out of the box, via its `label_mode: attribute` option.
 
-If you prefer to build your own map card instead:
+To set this up:
+
+1. Open the dashboard you want to use (or create a new one under **Settings → Dashboards → Add dashboard**).
+2. Choose **Edit dashboard → Add card → Manual**.
+3. Paste the following configuration:
 
 ```yaml
 type: map
@@ -91,7 +95,28 @@ geo_location_sources:
   - source: swiss_waters
     label_mode: attribute
     attribute: temperature
+default_zoom: 9
 ```
+
+Bathing sites have no map marker; two **Tile cards** per site show the quality class and the sampling date at a glance. The entity IDs follow the pattern `sensor.swiss_waters_bathing_<site>_quality` / `_last_sample` / `_temperature` — copy the exact IDs from the entity list of the site's device (Settings → Devices & services → Swiss Waters):
+
+```yaml
+type: tile
+entity: sensor.swiss_waters_bathing_<site>_quality
+name: <Site name> – quality
+```
+
+```yaml
+type: tile
+entity: sensor.swiss_waters_bathing_<site>_last_sample
+name: <Site name> – last sample
+```
+
+The Lake Zurich temperature stations provide only `sensor.swiss_waters_bathing_<site>_temperature` (no quality class or sampling date).
+
+The integration deliberately does not create or modify any dashboard on your behalf — your dashboards stay entirely under your own control.
+
+> **Note:** the station entities are hidden by default so they don't flood Home Assistant's auto-generated overview map. This only affects entities the first time they are registered; the Map card above finds them regardless, because it selects them by source.
 
 ## Notes
 

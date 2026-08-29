@@ -1,5 +1,12 @@
 # Changelog
 
+## 1.3.0 — 2026-08-29
+
+**Breaking:** the integration no longer creates a "Swiss Waters" dashboard for you, and no longer adds a "Bathing sites" view to it. It wrote directly into Home Assistant's internal Lovelace storage, which could silently discard the entry again, recreated the dashboard even after a user had deliberately deleted it, and appended the bathing view to a dashboard the user may have customised. Dashboards are now left entirely to the user. An existing dashboard from an earlier version is kept and kept working — nothing is deleted on update. The README explains how to add the built-in Map card and a tile per bathing site; the map card configuration is unchanged, so an existing dashboard needs no adjustment.
+
+- Entities that a user made visible by hand are no longer hidden again on every restart. New station entities are still hidden by default so they don't flood the auto-generated overview map; existing ones are no longer rewritten.
+- A failure while fetching the live lake temperatures is now reported like any other data problem (entities unavailable) instead of surfacing as an unexpected error with a traceback.
+
 ## 1.2.0 — 2026-07-26
 
 Bathing sites: bathing water quality and live lake bathing temperatures.
