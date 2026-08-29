@@ -4,7 +4,9 @@ the map card's label_mode: attribute option.
 
 Unlike short-lived events (earthquakes), stations are long-lived and their
 measured values change every 10 minutes, so the entities subscribe to the
-coordinator and refresh their attributes on every update.
+coordinator and refresh their attributes on every update. Their availability
+follows the coordinator as well: while the source is unreachable a marker is
+unavailable, like the station's sensors, instead of keeping its last label.
 """
 from __future__ import annotations
 
@@ -56,7 +58,8 @@ async def async_setup_entry(
 
 
 class SwissWatersStationEvent(GeolocationEvent):
-    """One map marker per monitoring station, values refreshed continuously."""
+    """One map marker per monitoring station, values refreshed continuously,
+    availability following the coordinator's last refresh."""
 
     _attr_should_poll = False
     _attr_source = SOURCE
@@ -96,7 +99,22 @@ class SwissWatersStationEvent(GeolocationEvent):
 
     async def async_added_to_hass(self) -> None:
         await super().async_added_to_hass()
+        # The coordinator notifies its listeners after every refresh that
+        # changed something — new data, or the success flag flipping on a
+        # failed refresh (which keeps the previous data) and again on
+        # recovery. Writing state on each notification is what publishes
+        # both the fresh label and the availability change.
         self.async_on_remove(self._coordinator.async_add_listener(self.async_write_ha_state))
+
+    @property
+    def available(self) -> bool:
+        """Like the sensors: while the source is unreachable the marker is
+        unavailable instead of showing its last known temperature on the map
+        indefinitely. Not a CoordinatorEntity (the lifecycle is managed by the
+        sync function), so this reads the coordinator directly; the listener
+        registered in async_added_to_hass writes state whenever the flag
+        flips, so the change reaches the state machine."""
+        return self._coordinator.last_update_success and bool(self._station())
 
     @property
     def extra_state_attributes(self):

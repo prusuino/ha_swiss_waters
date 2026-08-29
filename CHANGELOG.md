@@ -1,6 +1,6 @@
 # Changelog
 
-## 1.3.1 — 2026-08-29
+## 1.4.0 — 2026-08-29
 
 The dashboard that 1.3.0 removed has a replacement: a **dashboard strategy**. A strategy is a recipe Home Assistant renders in the browser at display time — it stores nothing, overwrites nothing, and reflects your current setup on every page load. Add a station or a bathing site and its section appears; delete an entry and it is gone, with no stale card left behind. It is entirely optional, and existing dashboards are not touched.
 
@@ -15,6 +15,9 @@ The dashboard that 1.3.0 removed has a replacement: a **dashboard strategy**. A 
 - **One-time step: register the resource.** The integration serves the file at `/swiss_waters_files/swiss-waters-dashboard.js` but does not add it to your Lovelace resources — the resource list is part of your dashboard configuration, and the integration stays out of it. Add it once under **Settings → Dashboards → ⋮ → Resources** with type *JavaScript module*, then reload the page.
 - Changed: the minimum Home Assistant version is now **2025.4.0** (previously 2024.1.0). Serving the file uses the static-path API from 2024.7, and the generated dashboard relies on the sections view with heading cards and `grid_options` (2024.10/2024.11) and on the map card's attribute labels for geo-location sources (2025.4) — the same feature the README's manual map card has always used.
 - Added: `http` is declared as a dependency in the manifest, so the static path is registered when the integration loads.
+- Fixed: the map markers now become **unavailable** while the FOEN data source is unreachable — exactly like the station sensors — instead of keeping their last water temperature on the map label indefinitely. They come back by themselves with the next successful update.
+- Nothing to do on update: no entity id, name or hidden/visible setting changes. The map markers have carried the config entry in their unique id since 1.0.0, so a favorite station that also lies inside a radius overview keeps its own marker in each entry.
+- README: the installation section now describes the HACS listing (search for "Swiss Waters" in HACS, or use the *Open in HACS* button) instead of the custom-repository route, and a new section explains how to address the map markers — their entity ids follow the localized entity name, so cards and templates should select them by `source: swiss_waters` instead.
 
 ## 1.3.0 — 2026-08-29
 

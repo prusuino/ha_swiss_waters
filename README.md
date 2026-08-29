@@ -2,7 +2,7 @@
 
 # Swiss Waters (BAFU)
 
-[![hacs_badge](https://img.shields.io/badge/HACS-Custom-41BDF5.svg)](https://github.com/hacs/integration)
+[![hacs_badge](https://img.shields.io/badge/HACS-Default-41BDF5.svg)](https://github.com/hacs/integration)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 <a href="https://www.buymeacoffee.com/prusuino"><img src="https://cdn.buymeacoffee.com/buttons/v2/default-yellow.png" alt="Buy Me a Coffee" height="20"></a>
 
@@ -26,9 +26,37 @@ This integration queries LINDAS for all stations within a configurable radius ar
 | `sensor.swiss_waters_<station>_water_level` | Water level (m a.s.l.). |
 | `sensor.swiss_waters_<station>_discharge` | Discharge (m³/s). Rivers only — lakes don't report discharge. |
 | `sensor.swiss_waters_<station>_danger_level` | Official flood danger level (1–5), with the localized FOEN danger scale as an attribute. |
-| `geo_location.*` | One map marker per station, labeled with the current water temperature on a Map card (see below). |
+| `geo_location.water_...` (English) / `geo_location.gewasser_...` (German) — see [Addressing the map markers](#addressing-the-map-markers) | One map marker per station. State = distance from the entry's location (km; the home location for a favorite). The map label shows the current water temperature, refreshed on every update; the marker goes unavailable while the data source is unreachable. Attributes: temperature, water level, discharge, danger level, water body, station ID, measurement time. |
 
 Each sensor carries the station ID, water body, measurement time, and distance from your configured location as attributes. Data is refreshed every 10 minutes — the same cadence as the source.
+
+### Addressing the map markers
+
+The map markers are the one kind of entity without a fixed entity id: Home Assistant derives the object id from the entity's name, and that name is localized. The same station is `geo_location.gewasser_aare_bern_schonau` on a German instance and `geo_location.water_aare_bern_schonau` on an English one (French `geo_location.eaux_…`, Italian `geo_location.acque_…`). A card or template written against one language finds nothing on the other, so do not address markers by entity id — use their `source` attribute, which is always `swiss_waters`:
+
+- **Map card** — `geo_location_sources` draws every marker of this integration (also the ones hidden from the auto-generated overview), and it can put the live water temperature on the marker label:
+
+  ```yaml
+  type: map
+  geo_location_sources:
+    - source: swiss_waters
+      label_mode: attribute
+      attribute: temperature
+  ```
+
+- **Templates** — filter the `geo_location` domain on the `source` attribute instead of naming entities:
+
+  ```jinja
+  {{ states.geo_location
+     | selectattr('attributes.source', 'eq', 'swiss_waters')
+     | rejectattr('attributes.temperature', 'none')
+     | selectattr('attributes.temperature', 'gt', 20)
+     | map(attribute='name') | list }}
+  ```
+
+  This lists the stations in range whose water is currently warmer than 20 °C, in any language.
+
+The sensors are not affected: their ids are built from the station ID (`sensor.swiss_waters_<station>_...`), not from the localized name.
 
 ### Flood danger levels
 
@@ -62,9 +90,13 @@ Entity names, device info, and the config flow adapt automatically to your Home 
 
 ### HACS (recommended)
 
-1. In HACS, go to **Integrations → ⋮ → Custom repositories**, add this repository URL with category **Integration**.
-2. Search for **"Swiss Waters"** and install.
-3. Restart Home Assistant.
+1. Open **HACS**, search for **"Swiss Waters"** and download it — or use the button, which opens the integration directly in your HACS:
+
+   [![Open in HACS](https://my.home-assistant.io/badges/hacs_repository.svg)](https://my.home-assistant.io/redirect/hacs_repository/?owner=prusuino&repository=ha_swiss_waters&category=integration)
+
+2. Restart Home Assistant.
+
+Until the integration shows up in the HACS search, the button above adds it as a custom repository.
 
 ### Manual
 
