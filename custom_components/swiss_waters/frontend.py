@@ -31,9 +31,18 @@ async def async_serve_frontend(hass: HomeAssistant) -> None:
     Idempotent per HA run; safe to call from every config entry setup."""
     if hass.data.get(_SERVED_FLAG):
         return
+    # Claimed before the await so concurrent entry setups do not register
+    # twice; released again below if the registration does not go through,
+    # so the next entry setup retries instead of remembering a failure as done.
     hass.data[_SERVED_FLAG] = True
 
     frontend_dir = Path(__file__).parent / "frontend"
-    await hass.http.async_register_static_paths(
-        [StaticPathConfig(FRONTEND_URL_BASE, str(frontend_dir), cache_headers=False)]
-    )
+    registered = False
+    try:
+        await hass.http.async_register_static_paths(
+            [StaticPathConfig(FRONTEND_URL_BASE, str(frontend_dir), cache_headers=False)]
+        )
+        registered = True
+    finally:
+        if not registered:
+            hass.data.pop(_SERVED_FLAG, None)

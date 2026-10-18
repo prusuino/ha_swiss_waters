@@ -1,5 +1,15 @@
 # Changelog
 
+## 1.5.1 — 2026-10-18
+
+- **Fixed: a failed registration of the dashboard strategy file is retried.**
+  The static path for `/swiss_waters_files/` was marked as served before the
+  registration had gone through, so one failed attempt (for example while the
+  HTTP component was not ready yet) left the dashboard strategy unreachable
+  until the next restart. The marker is now released again when the
+  registration raises, and the next config entry setup registers the path.
+  Nothing changes for existing entities or configuration.
+
 ## 1.5.0 — 2026-08-29
 
 Review follow-ups. Nothing to do on update: every existing entity keeps its entity id, unique ids are unchanged, and no configuration change is needed.
