@@ -1,5 +1,7 @@
 {
   "name": "Swiss Waters (BAFU)",
+  "zip_release": true,
+  "filename": "swiss_waters.zip",
   "render_readme": true,
   "homeassistant": "2025.4.0"
 }
