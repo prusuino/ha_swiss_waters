@@ -1,5 +1,10 @@
 # Changelog
 
+## 1.5.2 — 2026-11-05
+
+- **Maintenance release for the Home Assistant Marketplace.** Home Assistant 2026.11 replaces HACS with the built-in Marketplace (Settings → Marketplace); the README now describes installation and updates through it. The release ships the integration as a zip asset, which the Marketplace (and HACS) download in one piece.
+- No functional changes. Existing entities, their ids and your configuration are unchanged.
+
 ## 1.5.1 — 2026-10-18
 
 - **Fixed: a failed registration of the dashboard strategy file is retried.**
