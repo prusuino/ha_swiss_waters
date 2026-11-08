@@ -39,6 +39,38 @@
         "data": {
           "bathing_site": "Site de baignade"
         }
+      },
+      "reconfigure_radius": {
+        "title": "Modifier l'emplacement ou le rayon",
+        "description": "Modifie l'emplacement ou le rayon de cet aperçu. Les stations qui restent dans le rayon conservent leurs entités, identifiants et historique ; celles qui en sortent sont supprimées avec leurs appareils, et les nouvelles sont ajoutées après le rechargement.",
+        "data": {
+          "latitude": "Latitude",
+          "longitude": "Longitude",
+          "radius_km": "Rayon"
+        }
+      },
+      "reconfigure_favorite": {
+        "title": "Changer de station",
+        "description": "Choisis une autre station pour cette entrée. Les entités de la station précédente sont supprimées avec son appareil ; la nouvelle station reçoit les siennes.",
+        "data": {
+          "station": "Station"
+        }
+      },
+      "reconfigure_bathing_radius": {
+        "title": "Modifier l'emplacement ou le rayon",
+        "description": "Modifie l'emplacement ou le rayon de cet aperçu. Les sites de baignade qui restent dans le rayon conservent leurs entités, identifiants et historique ; ceux qui en sortent sont supprimés avec leurs appareils, et les nouveaux sont ajoutés après le rechargement.",
+        "data": {
+          "latitude": "Latitude",
+          "longitude": "Longitude",
+          "radius_km": "Rayon"
+        }
+      },
+      "reconfigure_bathing_favorite": {
+        "title": "Changer de site de baignade",
+        "description": "Choisis un autre site de baignade pour cette entrée. Les entités du site précédent sont supprimées avec son appareil ; le nouveau site reçoit les siennes.",
+        "data": {
+          "bathing_site": "Site de baignade"
+        }
       }
     },
     "error": {
@@ -47,7 +79,8 @@
       "no_sites": "Aucun site de baignade trouvé dans ce rayon. Essayez un rayon plus grand."
     },
     "abort": {
-      "already_configured": "Cette sélection est déjà configurée."
+      "already_configured": "Cette sélection est déjà configurée.",
+      "reconfigure_successful": "L'entrée a été mise à jour et l'intégration rechargée."
     }
   }
 }

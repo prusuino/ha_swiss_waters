@@ -39,6 +39,38 @@
         "data": {
           "bathing_site": "Bathing site"
         }
+      },
+      "reconfigure_radius": {
+        "title": "Change location or radius",
+        "description": "Change the location or the radius of this overview. Stations that stay inside the radius keep their entities, ids and history; stations that drop out are removed with their devices, and new ones are added after the reload.",
+        "data": {
+          "latitude": "Latitude",
+          "longitude": "Longitude",
+          "radius_km": "Radius"
+        }
+      },
+      "reconfigure_favorite": {
+        "title": "Change station",
+        "description": "Pick another station for this entry. The entities of the previous station are removed with its device; the new station gets its own.",
+        "data": {
+          "station": "Station"
+        }
+      },
+      "reconfigure_bathing_radius": {
+        "title": "Change location or radius",
+        "description": "Change the location or the radius of this overview. Bathing sites that stay inside the radius keep their entities, ids and history; sites that drop out are removed with their devices, and new ones are added after the reload.",
+        "data": {
+          "latitude": "Latitude",
+          "longitude": "Longitude",
+          "radius_km": "Radius"
+        }
+      },
+      "reconfigure_bathing_favorite": {
+        "title": "Change bathing site",
+        "description": "Pick another bathing site for this entry. The entities of the previous site are removed with its device; the new site gets its own.",
+        "data": {
+          "bathing_site": "Bathing site"
+        }
       }
     },
     "error": {
@@ -47,7 +79,8 @@
       "no_sites": "No bathing sites found within this radius. Try a larger radius."
     },
     "abort": {
-      "already_configured": "This selection is already configured."
+      "already_configured": "This selection is already configured.",
+      "reconfigure_successful": "The entry was updated and the integration reloaded."
     }
   }
 }

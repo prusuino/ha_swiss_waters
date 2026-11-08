@@ -39,6 +39,38 @@
         "data": {
           "bathing_site": "Badestelle"
         }
+      },
+      "reconfigure_radius": {
+        "title": "Standort oder Umkreis ändern",
+        "description": "Ändert Standort oder Umkreis dieser Übersicht. Stationen, die im Umkreis bleiben, behalten ihre Entitäten, IDs und ihren Verlauf; Stationen, die herausfallen, werden mit ihren Geräten entfernt, neue kommen nach dem Neuladen dazu.",
+        "data": {
+          "latitude": "Breitengrad",
+          "longitude": "Längengrad",
+          "radius_km": "Umkreis"
+        }
+      },
+      "reconfigure_favorite": {
+        "title": "Station ändern",
+        "description": "Wähle eine andere Station für diesen Eintrag. Die Entitäten der bisherigen Station werden mit ihrem Gerät entfernt; die neue Station bekommt ihre eigenen.",
+        "data": {
+          "station": "Station"
+        }
+      },
+      "reconfigure_bathing_radius": {
+        "title": "Standort oder Umkreis ändern",
+        "description": "Ändert Standort oder Umkreis dieser Übersicht. Badestellen, die im Umkreis bleiben, behalten ihre Entitäten, IDs und ihren Verlauf; Badestellen, die herausfallen, werden mit ihren Geräten entfernt, neue kommen nach dem Neuladen dazu.",
+        "data": {
+          "latitude": "Breitengrad",
+          "longitude": "Längengrad",
+          "radius_km": "Umkreis"
+        }
+      },
+      "reconfigure_bathing_favorite": {
+        "title": "Badestelle ändern",
+        "description": "Wähle eine andere Badestelle für diesen Eintrag. Die Entitäten der bisherigen Badestelle werden mit ihrem Gerät entfernt; die neue bekommt ihre eigenen.",
+        "data": {
+          "bathing_site": "Badestelle"
+        }
       }
     },
     "error": {
@@ -47,7 +79,8 @@
       "no_sites": "Keine Badestellen in diesem Umkreis gefunden. Versuche einen grösseren Umkreis."
     },
     "abort": {
-      "already_configured": "Diese Auswahl ist bereits eingerichtet."
+      "already_configured": "Diese Auswahl ist bereits eingerichtet.",
+      "reconfigure_successful": "Der Eintrag wurde aktualisiert und die Integration neu geladen."
     }
   }
 }

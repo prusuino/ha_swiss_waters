@@ -39,6 +39,38 @@
         "data": {
           "bathing_site": "Zona di balneazione"
         }
+      },
+      "reconfigure_radius": {
+        "title": "Modificare posizione o raggio",
+        "description": "Modifica la posizione o il raggio di questa panoramica. Le stazioni che restano nel raggio mantengono entità, ID e cronologia; quelle che ne escono vengono rimosse con i loro dispositivi, le nuove vengono aggiunte dopo il ricaricamento.",
+        "data": {
+          "latitude": "Latitudine",
+          "longitude": "Longitudine",
+          "radius_km": "Raggio"
+        }
+      },
+      "reconfigure_favorite": {
+        "title": "Cambiare stazione",
+        "description": "Scegli un'altra stazione per questa voce. Le entità della stazione precedente vengono rimosse con il suo dispositivo; la nuova stazione riceve le proprie.",
+        "data": {
+          "station": "Stazione"
+        }
+      },
+      "reconfigure_bathing_radius": {
+        "title": "Modificare posizione o raggio",
+        "description": "Modifica la posizione o il raggio di questa panoramica. Le zone di balneazione che restano nel raggio mantengono entità, ID e cronologia; quelle che ne escono vengono rimosse con i loro dispositivi, le nuove vengono aggiunte dopo il ricaricamento.",
+        "data": {
+          "latitude": "Latitudine",
+          "longitude": "Longitudine",
+          "radius_km": "Raggio"
+        }
+      },
+      "reconfigure_bathing_favorite": {
+        "title": "Cambiare zona di balneazione",
+        "description": "Scegli un'altra zona di balneazione per questa voce. Le entità della zona precedente vengono rimosse con il suo dispositivo; la nuova riceve le proprie.",
+        "data": {
+          "bathing_site": "Zona di balneazione"
+        }
       }
     },
     "error": {
@@ -47,7 +79,8 @@
       "no_sites": "Nessuna zona di balneazione trovata entro questo raggio. Prova un raggio maggiore."
     },
     "abort": {
-      "already_configured": "Questa selezione è già configurata."
+      "already_configured": "Questa selezione è già configurata.",
+      "reconfigure_successful": "La voce è stata aggiornata e l'integrazione ricaricata."
     }
   }
 }

@@ -1,5 +1,9 @@
 # Changelog
 
+## 1.7.0 — 2026-11-08
+
+- **New: reconfigure an entry in place.** The entry's menu under **Settings → Devices & services** now offers *Reconfigure*, with the form of the entry's own mode: another location or radius for an overview, another station or bathing site for a favorite. The entry keeps its id, so stations and sites that stay selected keep their entities, ids and history; the entities and devices of those that drop out of the selection are removed, and the reload adds the new ones. The form checks the selection against the data service as the setup form does and refuses a change that would duplicate another entry. Suggested entity ids keep the short entry tag they were created with.
+
 ## 1.6.1 — 2026-11-06
 
 - **Fixed: the diagnostics download could contain private values.** The entry's unique id went out unredacted: depending on the integration it holds the coordinates of the entry or, for a VKF entry of Swiss Hail Protection, the device serial. The text of the last error could also repeat a request URL. The unique id, the entry title and the entry's name and location fields are now redacted, and only the type of the last error is reported. If you have shared a diagnostics file from the previous version, consider it exposed.

@@ -113,6 +113,8 @@ The integration is listed in the Marketplace default catalog (formerly the HACS 
    - **Single favourite bathing site:** one bathing site picked by name — the Zurich lake stations Tiefenbrunnen and Mythenquai are in that list as well.
 3. Done. Add the integration again for further favorites or another radius — every entry is independent, and all modes combine freely.
 
+**Changing an entry later.** Open the entry's menu (⋮) under **Settings → Devices & services → Swiss Waters (BAFU)** and choose **Reconfigure**: an overview takes a new location or radius, a favorite takes another station or bathing site. Stations and sites that stay selected keep their entities and history; those that drop out are removed with their devices, new ones are added after the reload.
+
 ## Dashboard
 
 The integration ships a **dashboard strategy**: a recipe Home Assistant renders in the browser, rather than a dashboard written into your configuration. Nothing is stored, nothing is overwritten, and the result follows your setup — add a station or a bathing site and it appears on the next page load; delete an entry and it is gone, with no leftover card.
