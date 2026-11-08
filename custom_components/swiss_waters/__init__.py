@@ -8,6 +8,8 @@ from homeassistant.core import HomeAssistant
 
 from .const import CONF_MODE, DOMAIN, MODE_BATHING_FAVORITE, MODE_BATHING_RADIUS
 from .coordinator import SwissBathingCoordinator, SwissWatersCoordinator
+
+type SwissWatersConfigEntry = ConfigEntry[SwissWatersCoordinator | SwissBathingCoordinator]
 from .issues import async_clear_entry_issues
 from .frontend import async_serve_frontend
 
@@ -23,7 +25,7 @@ def is_bathing_entry(entry: ConfigEntry) -> bool:
     return entry.data.get(CONF_MODE) in BATHING_MODES
 
 
-async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
+async def async_setup_entry(hass: HomeAssistant, entry: SwissWatersConfigEntry) -> bool:
     try:
         await async_serve_frontend(hass)
     except Exception:  # noqa: BLE001 - serving the strategy must never block integration setup
@@ -37,14 +39,13 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
         coordinator = SwissWatersCoordinator(hass, entry)
     await coordinator.async_config_entry_first_refresh()
 
-    hass.data.setdefault(DOMAIN, {})[entry.entry_id] = coordinator
+    entry.runtime_data = coordinator
     await hass.config_entries.async_forward_entry_setups(entry, PLATFORMS)
     return True
 
 
-async def async_unload_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
+async def async_unload_entry(hass: HomeAssistant, entry: SwissWatersConfigEntry) -> bool:
     unloaded = await hass.config_entries.async_unload_platforms(entry, PLATFORMS)
     if unloaded:
         async_clear_entry_issues(hass, entry.entry_id)
-        hass.data[DOMAIN].pop(entry.entry_id)
     return unloaded

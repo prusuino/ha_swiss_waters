@@ -281,6 +281,16 @@ The integration never creates or modifies a dashboard on your behalf — the str
 
 > **Note:** the station entities are hidden by default so they don't flood Home Assistant's auto-generated overview map. This only affects entities the first time they are registered; the Map card — in the strategy as well as in the snippet above — finds them regardless, because it selects them by source.
 
+## Removal
+
+1. **Settings → Devices & services → Swiss Waters (BAFU)**, open the entry's menu (⋮) and choose **Delete**; repeat for every radius and favorite. The entities, their history and the devices go with the entry.
+2. If you use the bundled dashboard strategy, delete that dashboard under **Settings → Dashboards**.
+3. Remove the integration itself in the **Marketplace** (or HACS), then restart Home Assistant. With a manual installation, delete `custom_components/swiss_waters` instead.
+
+## Quality scale
+
+The integration declares **Bronze** on the [Home Assistant integration quality scale](https://developers.home-assistant.io/docs/core/integration-quality-scale/): a config flow with tests, unique ids for every entity, brand images, installation and removal instructions, a connection check before an entry is created, no duplicate entries, runtime data on the config entry, and the other Bronze rules. The tier is self-assessed, as it is for every custom integration; the per-rule status, including what is still open for Silver and Gold, is in `custom_components/swiss_waters/quality_scale.yaml`.
+
 ## Notes
 
 - **Repairs.** When the FOEN data service has not answered for several refreshes in a row, or when a favorite station or bathing site is no longer in the FOEN list, a notice appears under **Settings → Repairs** that says what happened and what to do; it disappears on its own once the service answers again or the item is listed again.

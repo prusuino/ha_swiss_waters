@@ -105,7 +105,7 @@ async def async_setup_entry(
 ) -> None:
     from . import is_bathing_entry
 
-    coordinator = hass.data[DOMAIN][entry.entry_id]
+    coordinator = entry.runtime_data
     builder = _new_bathing_entities if is_bathing_entry(entry) else _new_station_entities
     known: set[tuple[str, str]] = set()
 

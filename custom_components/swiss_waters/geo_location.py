@@ -43,7 +43,7 @@ async def async_setup_entry(
         # Bathing sites are stationary devices without map markers for now.
         return
 
-    coordinator: SwissWatersCoordinator = hass.data[DOMAIN][entry.entry_id]
+    coordinator: SwissWatersCoordinator = entry.runtime_data
     known_entities: dict[str, SwissWatersStationEvent] = {}
 
     @callback
