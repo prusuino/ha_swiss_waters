@@ -8,6 +8,7 @@ from homeassistant.core import HomeAssistant
 
 from .const import CONF_MODE, DOMAIN, MODE_BATHING_FAVORITE, MODE_BATHING_RADIUS
 from .coordinator import SwissBathingCoordinator, SwissWatersCoordinator
+from .issues import async_clear_entry_issues
 from .frontend import async_serve_frontend
 
 _LOGGER = logging.getLogger(__name__)
@@ -44,5 +45,6 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
 async def async_unload_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
     unloaded = await hass.config_entries.async_unload_platforms(entry, PLATFORMS)
     if unloaded:
+        async_clear_entry_issues(hass, entry.entry_id)
         hass.data[DOMAIN].pop(entry.entry_id)
     return unloaded

@@ -283,6 +283,7 @@ The integration never creates or modifies a dashboard on your behalf — the str
 
 ## Notes
 
+- **Repairs.** When the FOEN data service has not answered for several refreshes in a row, or when a favorite station or bathing site is no longer in the FOEN list, a notice appears under **Settings → Repairs** that says what happened and what to do; it disappears on its own once the service answers again or the item is listed again.
 - Stations that newly fall within your radius (the network changes rarely) get their sensors and their map marker with the next update — no reload needed. A measure a station starts reporting later is picked up the same way.
 - Not every station reports every measure: lake stations have no discharge, and only about a third of the network has temperature probes. Sensors are only created for measures a station actually reports.
 - Stations and bathing sites that disappear from the source keep their entities, which turn unavailable; if a station is gone for good, delete its device under **Settings → Devices & services**.

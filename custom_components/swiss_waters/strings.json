@@ -176,5 +176,19 @@
         }
       }
     }
+  },
+  "issues": {
+    "unreachable": {
+      "title": "Swiss Waters: data service unreachable",
+      "description": "The FOEN data service at {host} has not answered for several refreshes in a row. Check your internet connection; if it is fine, the service itself is down. The sensors stay unavailable until then and recover on their own; this notice disappears with the next successful refresh."
+    },
+    "station_missing": {
+      "title": "Swiss Waters: favorite station no longer listed",
+      "description": "The FOEN station list no longer contains the favorite station {station}. The station may have been decommissioned or renumbered. Its sensors stay unavailable. Pick another station with Reconfigure in the entry's menu, or remove the entry; this notice disappears when the station is listed again."
+    },
+    "site_missing": {
+      "title": "Swiss Waters: favorite bathing site no longer listed",
+      "description": "The FOEN list of bathing sites no longer contains the favorite site {site}. Its sensors stay unavailable. Pick another site with Reconfigure in the entry's menu, or remove the entry; this notice disappears when the site is listed again."
+    }
   }
 }

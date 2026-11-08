@@ -26,6 +26,7 @@ from homeassistant.helpers.aiohttp_client import async_get_clientsession
 from homeassistant.helpers.update_coordinator import DataUpdateCoordinator, UpdateFailed
 from homeassistant.util import dt as dt_util
 
+from .issues import IssueReporter
 from .const import (
     BATHING_CUBE_MAX_AGE,
     BATHING_TEMP_MAX_AGE,
@@ -218,21 +219,33 @@ class SwissWatersCoordinator(DataUpdateCoordinator[dict]):
             name=DOMAIN,
             update_interval=timedelta(minutes=UPDATE_INTERVAL_MINUTES),
         )
+        self.issues = IssueReporter(hass, entry.entry_id)
 
     async def _async_update_data(self) -> dict:
         data = self.config_entry.data
+        favorites = list(data.get(CONF_STATIONS, []))
         try:
             stations = await async_fetch_stations(
                 self.hass,
                 data[CONF_LATITUDE],
                 data[CONF_LONGITUDE],
                 data[CONF_RADIUS_KM],
-                set(data.get(CONF_STATIONS, [])),
+                set(favorites),
             )
         except _TRANSPORT_ERRORS as err:
+            self.issues.failure("unreachable", {"host": "lindas.admin.ch"})
             raise UpdateFailed(f"FOEN hydrological data unreachable: {err}") from err
         except _PARSE_ERRORS as err:
+            self.issues.failure("unreachable", {"host": "lindas.admin.ch"})
             raise UpdateFailed(f"FOEN hydrological data unreadable: {err}") from err
+        self.issues.clear("unreachable")
+        # A favorite that the FOEN no longer lists (decommissioned or
+        # renumbered) cannot recover on its own: say so under Repairs.
+        missing = [station_id for station_id in favorites if station_id not in stations]
+        if missing:
+            self.issues.raise_now("station_missing", {"station": ", ".join(missing)})
+        else:
+            self.issues.clear("station_missing")
         return {"stations": stations, "count": len(stations)}
 
 
@@ -257,6 +270,7 @@ class SwissBathingCoordinator(DataUpdateCoordinator[dict]):
         self._cube: str | None = None
         self._cube_resolved: datetime | None = None
         self._empty_quality_logged = False
+        self.issues = IssueReporter(hass, entry.entry_id)
 
     async def _async_cube(self, now: datetime, force: bool = False) -> tuple[str, bool]:
         """IRI of the published bathing cube and whether it was resolved just now.
@@ -303,9 +317,21 @@ class SwissBathingCoordinator(DataUpdateCoordinator[dict]):
             # or were picked as favourites.
             temperatures = await async_fetch_temperatures(self.hass)
         except _TRANSPORT_ERRORS as err:
+            self.issues.failure("unreachable", {"host": "environment.ld.admin.ch"})
             raise UpdateFailed(f"FOEN bathing water data unreachable: {err}") from err
         except _PARSE_ERRORS as err:
+            self.issues.failure("unreachable", {"host": "environment.ld.admin.ch"})
             raise UpdateFailed(f"FOEN bathing water data unreadable: {err}") from err
+        self.issues.clear("unreachable")
+        # A favorite site that is no longer in the FOEN list (the lake
+        # stations are fixed and never missing from the list itself).
+        missing_sites = [
+            site_id for site_id in favorites if not site_id.startswith("wapo_") and site_id not in all_sites
+        ]
+        if missing_sites:
+            self.issues.raise_now("site_missing", {"site": ", ".join(missing_sites)})
+        else:
+            self.issues.clear("site_missing")
 
         if not quality:
             if not self._empty_quality_logged:

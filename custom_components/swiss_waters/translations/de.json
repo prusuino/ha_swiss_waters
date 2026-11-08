@@ -176,5 +176,19 @@
         }
       }
     }
+  },
+  "issues": {
+    "unreachable": {
+      "title": "Swiss Waters: Datendienst nicht erreichbar",
+      "description": "Der BAFU-Datendienst unter {host} hat mehrere Aktualisierungen in Folge nicht beantwortet. Prüfe deine Internetverbindung; ist sie in Ordnung, ist der Dienst selbst gestört. Die Sensoren bleiben bis dahin nicht verfügbar und erholen sich von selbst; dieser Hinweis verschwindet mit der nächsten erfolgreichen Aktualisierung."
+    },
+    "station_missing": {
+      "title": "Swiss Waters: Favoriten-Station nicht mehr gelistet",
+      "description": "Die BAFU-Stationsliste enthält die favorisierte Station {station} nicht mehr. Die Station wurde möglicherweise stillgelegt oder umnummeriert. Ihre Sensoren bleiben nicht verfügbar. Wähle über „Neu konfigurieren“ im Menü des Eintrags eine andere Station oder entferne den Eintrag; dieser Hinweis verschwindet, sobald die Station wieder gelistet ist."
+    },
+    "site_missing": {
+      "title": "Swiss Waters: Favoriten-Badestelle nicht mehr gelistet",
+      "description": "Die BAFU-Liste der Badestellen enthält die favorisierte Badestelle {site} nicht mehr. Ihre Sensoren bleiben nicht verfügbar. Wähle über „Neu konfigurieren“ im Menü des Eintrags eine andere Badestelle oder entferne den Eintrag; dieser Hinweis verschwindet, sobald die Badestelle wieder gelistet ist."
+    }
   }
 }

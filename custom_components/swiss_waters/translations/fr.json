@@ -176,5 +176,19 @@
         }
       }
     }
+  },
+  "issues": {
+    "unreachable": {
+      "title": "Swiss Waters : service de données injoignable",
+      "description": "Le service de données de l'OFEV à l'adresse {host} n'a pas répondu lors de plusieurs actualisations consécutives. Vérifie ta connexion internet ; si elle fonctionne, le service lui-même est en panne. Les capteurs restent indisponibles jusque-là et se rétablissent d'eux-mêmes ; cet avis disparaît à la prochaine actualisation réussie."
+    },
+    "station_missing": {
+      "title": "Swiss Waters : station favorite plus répertoriée",
+      "description": "La liste des stations de l'OFEV ne contient plus la station favorite {station}. La station a peut-être été désaffectée ou renumérotée. Ses capteurs restent indisponibles. Choisis une autre station via « Reconfigurer » dans le menu de l'entrée, ou supprime l'entrée ; cet avis disparaît dès que la station est de nouveau répertoriée."
+    },
+    "site_missing": {
+      "title": "Swiss Waters : site de baignade favori plus répertorié",
+      "description": "La liste des sites de baignade de l'OFEV ne contient plus le site favori {site}. Ses capteurs restent indisponibles. Choisis un autre site via « Reconfigurer » dans le menu de l'entrée, ou supprime l'entrée ; cet avis disparaît dès que le site est de nouveau répertorié."
+    }
   }
 }

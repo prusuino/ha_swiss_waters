@@ -176,5 +176,19 @@
         }
       }
     }
+  },
+  "issues": {
+    "unreachable": {
+      "title": "Swiss Waters: servizio dati non raggiungibile",
+      "description": "Il servizio dati dell'UFAM all'indirizzo {host} non ha risposto per diversi aggiornamenti consecutivi. Controlla la connessione internet; se funziona, è il servizio stesso a essere guasto. I sensori restano non disponibili fino ad allora e si ripristinano da soli; questo avviso scompare con il prossimo aggiornamento riuscito."
+    },
+    "station_missing": {
+      "title": "Swiss Waters: stazione preferita non più elencata",
+      "description": "L'elenco delle stazioni dell'UFAM non contiene più la stazione preferita {station}. La stazione potrebbe essere stata dismessa o rinumerata. I suoi sensori restano non disponibili. Scegli un'altra stazione con «Riconfigura» nel menu della voce, oppure rimuovi la voce; questo avviso scompare appena la stazione è di nuovo elencata."
+    },
+    "site_missing": {
+      "title": "Swiss Waters: zona di balneazione preferita non più elencata",
+      "description": "L'elenco delle zone di balneazione dell'UFAM non contiene più la zona preferita {site}. I suoi sensori restano non disponibili. Scegli un'altra zona con «Riconfigura» nel menu della voce, oppure rimuovi la voce; questo avviso scompare appena la zona è di nuovo elencata."
+    }
   }
 }
