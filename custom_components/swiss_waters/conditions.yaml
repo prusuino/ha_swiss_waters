@@ -1,0 +1,35 @@
+.condition_common_fields: &condition_common_fields
+  behavior:
+    required: true
+    default: any
+    selector:
+      automation_behavior:
+        mode: condition
+  for:
+    required: true
+    default: 00:00:00
+    selector:
+      duration:
+  level:
+    required: false
+    default: 3
+    example: 3
+    selector:
+      number:
+        min: 2
+        max: 5
+        step: 1
+        mode: slider
+
+.danger_target: &danger_target
+  entity:
+    - integration: swiss_waters
+      domain: sensor
+
+is_flood_danger_at_least:
+  fields: *condition_common_fields
+  target: *danger_target
+
+is_flood_danger_below:
+  fields: *condition_common_fields
+  target: *danger_target

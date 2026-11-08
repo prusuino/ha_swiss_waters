@@ -82,5 +82,99 @@
       "already_configured": "Questa selezione è già configurata.",
       "reconfigure_successful": "La voce è stata aggiornata e l'integrazione ricaricata."
     }
+  },
+  "triggers": {
+    "flood_danger_level_reached": {
+      "name": "Livello di pericolo di piena raggiunto",
+      "description": "Si attiva quando il livello ufficiale di pericolo di piena di una stazione raggiunge o supera il livello minimo (2 moderato, 3 marcato, 4 forte, 5 molto forte). Si attiva una volta al raggiungimento, non a ogni cambiamento al di sopra.",
+      "fields": {
+        "behavior": {
+          "name": "Attiva quando"
+        },
+        "for": {
+          "name": "Per almeno"
+        },
+        "minimum_level": {
+          "name": "Livello minimo"
+        }
+      }
+    },
+    "water_temperature_crossed_threshold": {
+      "name": "Temperatura dell'acqua ha superato una soglia",
+      "description": "Si attiva quando la temperatura dell'acqua di una stazione attraversa la soglia impostata, per esempio il tuo limite per la balneazione.",
+      "fields": {
+        "behavior": {
+          "name": "Attiva quando"
+        },
+        "for": {
+          "name": "Per almeno"
+        },
+        "threshold": {
+          "name": "Soglia"
+        }
+      }
+    },
+    "water_level_crossed_threshold": {
+      "name": "Livello dell'acqua ha superato una soglia",
+      "description": "Si attiva quando il livello dell'acqua di una stazione attraversa la soglia impostata (metri sul livello del mare, come misurato dalla stazione).",
+      "fields": {
+        "behavior": {
+          "name": "Attiva quando"
+        },
+        "for": {
+          "name": "Per almeno"
+        },
+        "threshold": {
+          "name": "Soglia"
+        }
+      }
+    },
+    "discharge_crossed_threshold": {
+      "name": "Deflusso ha superato una soglia",
+      "description": "Si attiva quando il deflusso di una stazione attraversa la soglia impostata, in metri cubi al secondo.",
+      "fields": {
+        "behavior": {
+          "name": "Attiva quando"
+        },
+        "for": {
+          "name": "Per almeno"
+        },
+        "threshold": {
+          "name": "Soglia"
+        }
+      }
+    }
+  },
+  "conditions": {
+    "is_flood_danger_at_least": {
+      "name": "Livello di pericolo di piena è almeno",
+      "description": "Soddisfatta finché il livello ufficiale di pericolo di piena di una stazione è al livello indicato o superiore.",
+      "fields": {
+        "behavior": {
+          "name": "Condizione soddisfatta se"
+        },
+        "for": {
+          "name": "Per almeno"
+        },
+        "level": {
+          "name": "Livello"
+        }
+      }
+    },
+    "is_flood_danger_below": {
+      "name": "Livello di pericolo di piena è inferiore a",
+      "description": "Soddisfatta finché il livello ufficiale di pericolo di piena di una stazione è sotto il livello indicato.",
+      "fields": {
+        "behavior": {
+          "name": "Condizione soddisfatta se"
+        },
+        "for": {
+          "name": "Per almeno"
+        },
+        "level": {
+          "name": "Livello"
+        }
+      }
+    }
   }
 }

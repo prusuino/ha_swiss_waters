@@ -82,6 +82,55 @@ Two additional setup modes cover the ~215 official Swiss bathing sites — again
 
 The [dashboard strategy](#dashboard) gives every site a section of its own; a tile card per site works just as well if you build your own dashboard — see [Building it yourself](#building-it-yourself) for an example.
 
+## Automations
+
+### Blueprint: notify on flood danger
+
+The repository ships a blueprint that sends a notification to your phone when the official flood danger level of one of your stations rises to a level you choose or above: station, level and the level's meaning, once when the level is reached. Import it once, then create an automation from it:
+
+[![Import blueprint](https://my.home-assistant.io/badges/blueprint_import.svg)](https://my.home-assistant.io/redirect/blueprint_import/?blueprint_url=https%3A%2F%2Fgithub.com%2Fprusuino%2Fha_swiss_waters%2Fblob%2Fmain%2Fblueprints%2Fautomation%2Fflood_notification.yaml)
+
+An action field takes your own steps; the text is available there as `{{ message }}`.
+
+### Triggers and conditions in the automation editor
+
+On Home Assistant 2026.10 or newer the integration adds its own entries to the automation editor's trigger list, on 2026.11 or newer also to the condition list. They target the integration's own sensors (pick an entity, a station's device or an area); the usual *for* duration and behaviour options apply.
+
+| Trigger | Fires when |
+|---|---|
+| **Flood danger level reached** | the official flood danger level of a station rises to the **minimum level** (2–5, default 3) or above — once, not on every change above it |
+| **Water temperature crossed a threshold** | the water temperature crosses the threshold you set (a number or another entity) |
+| **Water level crossed a threshold** | the water level crosses the threshold you set |
+| **Discharge crossed a threshold** | the discharge crosses the threshold you set |
+
+| Condition | Passes while |
+|---|---|
+| **Flood danger level is at least** | the danger level of a station is at the **level** or above |
+| **Flood danger level is below** | the danger level of a station is below the **level** |
+
+```yaml
+triggers:
+  - trigger: swiss_waters.flood_danger_level_reached
+    target:
+      entity_id: sensor.swiss_waters_2135_danger_level_xrxp
+    options:
+      minimum_level: 3
+  - trigger: swiss_waters.water_temperature_crossed_threshold
+    target:
+      entity_id: sensor.swiss_waters_2135_temperature_xrxp
+    options:
+      threshold:
+        type: above
+        value:
+          number: 18
+conditions:
+  - condition: swiss_waters.is_flood_danger_below
+    target:
+      entity_id: sensor.swiss_waters_2135_danger_level_xrxp
+    options:
+      level: 3
+```
+
 ## Language
 
 Entity names, device info, and the config flow adapt automatically to your Home Assistant language setting — German, English, French, and Italian are supported, with English as the fallback.

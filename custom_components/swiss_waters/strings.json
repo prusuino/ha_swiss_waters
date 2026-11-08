@@ -82,5 +82,99 @@
       "already_configured": "This selection is already configured.",
       "reconfigure_successful": "The entry was updated and the integration reloaded."
     }
+  },
+  "triggers": {
+    "flood_danger_level_reached": {
+      "name": "Flood danger level reached",
+      "description": "Triggers when the official flood danger level of a station rises to the minimum level or above (2 moderate, 3 considerable, 4 great, 5 very great). Fires once when the level is reached, not on every change above it.",
+      "fields": {
+        "behavior": {
+          "name": "Trigger when"
+        },
+        "for": {
+          "name": "For at least"
+        },
+        "minimum_level": {
+          "name": "Minimum level"
+        }
+      }
+    },
+    "water_temperature_crossed_threshold": {
+      "name": "Water temperature crossed a threshold",
+      "description": "Triggers when the water temperature of a station crosses the threshold you set, for example your swimming limit.",
+      "fields": {
+        "behavior": {
+          "name": "Trigger when"
+        },
+        "for": {
+          "name": "For at least"
+        },
+        "threshold": {
+          "name": "Threshold"
+        }
+      }
+    },
+    "water_level_crossed_threshold": {
+      "name": "Water level crossed a threshold",
+      "description": "Triggers when the water level of a station crosses the threshold you set (metres above sea level, as the station reports it).",
+      "fields": {
+        "behavior": {
+          "name": "Trigger when"
+        },
+        "for": {
+          "name": "For at least"
+        },
+        "threshold": {
+          "name": "Threshold"
+        }
+      }
+    },
+    "discharge_crossed_threshold": {
+      "name": "Discharge crossed a threshold",
+      "description": "Triggers when the discharge of a station crosses the threshold you set, in cubic metres per second.",
+      "fields": {
+        "behavior": {
+          "name": "Trigger when"
+        },
+        "for": {
+          "name": "For at least"
+        },
+        "threshold": {
+          "name": "Threshold"
+        }
+      }
+    }
+  },
+  "conditions": {
+    "is_flood_danger_at_least": {
+      "name": "Flood danger level is at least",
+      "description": "Passes while the official flood danger level of a station is at the level or above.",
+      "fields": {
+        "behavior": {
+          "name": "Condition passes when"
+        },
+        "for": {
+          "name": "For at least"
+        },
+        "level": {
+          "name": "Level"
+        }
+      }
+    },
+    "is_flood_danger_below": {
+      "name": "Flood danger level is below",
+      "description": "Passes while the official flood danger level of a station is below the level.",
+      "fields": {
+        "behavior": {
+          "name": "Condition passes when"
+        },
+        "for": {
+          "name": "For at least"
+        },
+        "level": {
+          "name": "Level"
+        }
+      }
+    }
   }
 }

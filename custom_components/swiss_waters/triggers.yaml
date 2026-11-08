@@ -1,0 +1,107 @@
+.behavior: &behavior
+  required: true
+  default: each
+  selector:
+    automation_behavior:
+      mode: trigger
+
+.for: &for
+  required: true
+  default: 00:00:00
+  selector:
+    duration:
+
+.station_sensors: &station_sensors
+  entity:
+    - integration: swiss_waters
+      domain: sensor
+
+flood_danger_level_reached:
+  fields:
+    behavior: *behavior
+    for: *for
+    minimum_level:
+      required: false
+      default: 3
+      example: 3
+      selector:
+        number:
+          min: 2
+          max: 5
+          step: 1
+          mode: slider
+  target: *station_sensors
+
+water_temperature_crossed_threshold:
+  fields:
+    behavior: *behavior
+    for: *for
+    threshold:
+      required: true
+      selector:
+        numeric_threshold:
+          mode: crossed
+          entity:
+            - domain: input_number
+              unit_of_measurement: "°C"
+            - domain: number
+              unit_of_measurement: "°C"
+            - domain: sensor
+              device_class: temperature
+          number:
+            min: -5
+            max: 40
+            step: 0.1
+            mode: box
+            unit_of_measurement: "°C"
+  target:
+    entity:
+      - integration: swiss_waters
+        domain: sensor
+        device_class: temperature
+
+water_level_crossed_threshold:
+  fields:
+    behavior: *behavior
+    for: *for
+    threshold:
+      required: true
+      selector:
+        numeric_threshold:
+          mode: crossed
+          entity:
+            - domain: input_number
+              unit_of_measurement: "m"
+            - domain: number
+              unit_of_measurement: "m"
+            - domain: sensor
+              unit_of_measurement: "m"
+          number:
+            min: 0
+            step: any
+            mode: box
+            unit_of_measurement: "m"
+  target: *station_sensors
+
+discharge_crossed_threshold:
+  fields:
+    behavior: *behavior
+    for: *for
+    threshold:
+      required: true
+      selector:
+        numeric_threshold:
+          mode: crossed
+          entity:
+            - domain: input_number
+              unit_of_measurement: "m³/s"
+            - domain: number
+              unit_of_measurement: "m³/s"
+            - domain: sensor
+              unit_of_measurement: "m³/s"
+          number:
+            min: 0
+            step: any
+            mode: box
+            unit_of_measurement: "m³/s"
+  target: *station_sensors

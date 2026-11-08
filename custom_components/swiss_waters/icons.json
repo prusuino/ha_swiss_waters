@@ -1,0 +1,24 @@
+{
+  "triggers": {
+    "flood_danger_level_reached": {
+      "trigger": "mdi:home-flood"
+    },
+    "water_temperature_crossed_threshold": {
+      "trigger": "mdi:coolant-temperature"
+    },
+    "water_level_crossed_threshold": {
+      "trigger": "mdi:waves-arrow-up"
+    },
+    "discharge_crossed_threshold": {
+      "trigger": "mdi:water-pump"
+    }
+  },
+  "conditions": {
+    "is_flood_danger_at_least": {
+      "condition": "mdi:home-flood"
+    },
+    "is_flood_danger_below": {
+      "condition": "mdi:home-outline"
+    }
+  }
+}

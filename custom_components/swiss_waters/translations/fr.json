@@ -82,5 +82,99 @@
       "already_configured": "Cette sélection est déjà configurée.",
       "reconfigure_successful": "L'entrée a été mise à jour et l'intégration rechargée."
     }
+  },
+  "triggers": {
+    "flood_danger_level_reached": {
+      "name": "Niveau de danger de crue atteint",
+      "description": "Se déclenche quand le niveau officiel de danger de crue d'une station atteint ou dépasse le niveau minimal (2 modéré, 3 marqué, 4 fort, 5 très fort). Se déclenche une fois quand le niveau est atteint, pas à chaque changement au-dessus.",
+      "fields": {
+        "behavior": {
+          "name": "Déclencher quand"
+        },
+        "for": {
+          "name": "Pendant au moins"
+        },
+        "minimum_level": {
+          "name": "Niveau minimal"
+        }
+      }
+    },
+    "water_temperature_crossed_threshold": {
+      "name": "Température de l'eau a franchi un seuil",
+      "description": "Se déclenche quand la température de l'eau d'une station franchit le seuil fixé, par exemple ta limite de baignade.",
+      "fields": {
+        "behavior": {
+          "name": "Déclencher quand"
+        },
+        "for": {
+          "name": "Pendant au moins"
+        },
+        "threshold": {
+          "name": "Seuil"
+        }
+      }
+    },
+    "water_level_crossed_threshold": {
+      "name": "Niveau d'eau a franchi un seuil",
+      "description": "Se déclenche quand le niveau d'eau d'une station franchit le seuil fixé (mètres au-dessus de la mer, tel que la station le mesure).",
+      "fields": {
+        "behavior": {
+          "name": "Déclencher quand"
+        },
+        "for": {
+          "name": "Pendant au moins"
+        },
+        "threshold": {
+          "name": "Seuil"
+        }
+      }
+    },
+    "discharge_crossed_threshold": {
+      "name": "Débit a franchi un seuil",
+      "description": "Se déclenche quand le débit d'une station franchit le seuil fixé, en mètres cubes par seconde.",
+      "fields": {
+        "behavior": {
+          "name": "Déclencher quand"
+        },
+        "for": {
+          "name": "Pendant au moins"
+        },
+        "threshold": {
+          "name": "Seuil"
+        }
+      }
+    }
+  },
+  "conditions": {
+    "is_flood_danger_at_least": {
+      "name": "Niveau de danger de crue est au moins",
+      "description": "Remplie tant que le niveau officiel de danger de crue d'une station est au niveau indiqué ou au-dessus.",
+      "fields": {
+        "behavior": {
+          "name": "Condition remplie si"
+        },
+        "for": {
+          "name": "Pendant au moins"
+        },
+        "level": {
+          "name": "Niveau"
+        }
+      }
+    },
+    "is_flood_danger_below": {
+      "name": "Niveau de danger de crue est inférieur à",
+      "description": "Remplie tant que le niveau officiel de danger de crue d'une station est en dessous du niveau indiqué.",
+      "fields": {
+        "behavior": {
+          "name": "Condition remplie si"
+        },
+        "for": {
+          "name": "Pendant au moins"
+        },
+        "level": {
+          "name": "Niveau"
+        }
+      }
+    }
   }
 }

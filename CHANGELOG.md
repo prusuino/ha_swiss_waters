@@ -2,6 +2,8 @@
 
 ## 1.7.0 — 2026-11-08
 
+- **New: triggers and conditions in the automation editor** (Home Assistant 2026.10 / 2026.11 or newer). Triggers: *Flood danger level reached* (from a minimum level, fires once when the level is reached), *Water temperature crossed a threshold*, *Water level crossed a threshold* and *Discharge crossed a threshold*, each targeting the integration's own sensors of that measure. Conditions: *Flood danger level is at least* and *Flood danger level is below*. In all four languages; on older versions the entries are simply not offered.
+- **New: a blueprint, *notify on flood danger*.** One-click import from the README: picks the flood danger level sensors of your stations, a minimum level and your phone, and sends station, level and the level's meaning once when the level is reached; an action field takes your own steps with the text as `{{ message }}`.
 - **New: reconfigure an entry in place.** The entry's menu under **Settings → Devices & services** now offers *Reconfigure*, with the form of the entry's own mode: another location or radius for an overview, another station or bathing site for a favorite. The entry keeps its id, so stations and sites that stay selected keep their entities, ids and history; the entities and devices of those that drop out of the selection are removed, and the reload adds the new ones. The form checks the selection against the data service as the setup form does and refuses a change that would duplicate another entry. Suggested entity ids keep the short entry tag they were created with.
 
 ## 1.6.1 — 2026-11-06

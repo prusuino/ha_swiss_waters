@@ -1,0 +1,81 @@
+blueprint:
+  name: Swiss Waters – notify on flood danger
+  description: >-
+    Sends a notification to your phone when the official flood danger level
+    of one of your monitoring stations rises to the level you set or above:
+    station, level and the level's meaning. It fires once when the level is
+    reached, not on every refresh while it stays high.
+
+
+    Add your own steps in the action field, for example a text-to-speech
+    announcement; the text is available there as `{{ message }}`.
+  domain: automation
+  source_url: https://github.com/prusuino/ha_swiss_waters/blob/main/blueprints/automation/flood_notification.yaml
+  author: prusuino
+  homeassistant:
+    min_version: 2025.4.0
+  input:
+    danger_sensors:
+      name: Flood danger level sensors
+      description: The flood danger level sensor of each station you want to be told about.
+      selector:
+        entity:
+          multiple: true
+          filter:
+            - integration: swiss_waters
+              domain: sensor
+    minimum_level:
+      name: Minimum level
+      description: "Notify from this official danger level: 2 moderate, 3 considerable, 4 great, 5 very great."
+      default: 3
+      selector:
+        number:
+          min: 2
+          max: 5
+          step: 1
+          mode: slider
+    notify_device:
+      name: Phone
+      description: The phone (Home Assistant Companion app) that receives the notification.
+      selector:
+        device:
+          filter:
+            - integration: mobile_app
+    extra_actions:
+      name: Additional actions
+      description: Run after the notification. The notification text is available as `{{ message }}`.
+      default: []
+      selector:
+        action:
+
+mode: queued
+max_exceeded: silent
+
+triggers:
+  - trigger: state
+    entity_id: !input danger_sensors
+    not_to:
+      - unknown
+      - unavailable
+
+variables:
+  notify_device: !input notify_device
+  minimum_level: !input minimum_level
+  level: "{{ trigger.to_state.state | int(0) }}"
+  previous_level: "{{ trigger.from_state.state | int(0) if trigger.from_state is not none else 0 }}"
+  station: "{{ trigger.to_state.name }}"
+  level_text: "{{ trigger.to_state.attributes.danger_scale[trigger.to_state.state] if trigger.to_state.attributes.danger_scale is defined else '' }}"
+  message: >-
+    {{ station }}: flood danger level {{ level }}{{ ' – ' ~ level_text if level_text else '' }}.
+
+conditions:
+  # The level reached the minimum now; it was below before (or unknown).
+  - condition: template
+    value_template: "{{ level >= (minimum_level | int) and previous_level < (minimum_level | int) }}"
+
+actions:
+  - action: "notify.mobile_app_{{ device_attr(notify_device, 'name') | slugify }}"
+    data:
+      title: "Flood danger level {{ level }}"
+      message: "{{ message }}"
+  - sequence: !input extra_actions

@@ -82,5 +82,99 @@
       "already_configured": "Diese Auswahl ist bereits eingerichtet.",
       "reconfigure_successful": "Der Eintrag wurde aktualisiert und die Integration neu geladen."
     }
+  },
+  "triggers": {
+    "flood_danger_level_reached": {
+      "name": "Hochwasser-Gefahrenstufe erreicht",
+      "description": "Löst aus, wenn die amtliche Hochwasser-Gefahrenstufe einer Station auf die Mindeststufe oder höher steigt (2 mässig, 3 erheblich, 4 gross, 5 sehr gross). Feuert einmal beim Erreichen, nicht bei jeder weiteren Änderung darüber.",
+      "fields": {
+        "behavior": {
+          "name": "Auslösen wenn"
+        },
+        "for": {
+          "name": "Mindestens für"
+        },
+        "minimum_level": {
+          "name": "Mindeststufe"
+        }
+      }
+    },
+    "water_temperature_crossed_threshold": {
+      "name": "Wassertemperatur hat Schwellenwert überschritten",
+      "description": "Löst aus, wenn die Wassertemperatur einer Station den gesetzten Schwellenwert über- oder unterschreitet, zum Beispiel deine Badegrenze.",
+      "fields": {
+        "behavior": {
+          "name": "Auslösen wenn"
+        },
+        "for": {
+          "name": "Mindestens für"
+        },
+        "threshold": {
+          "name": "Schwellenwert"
+        }
+      }
+    },
+    "water_level_crossed_threshold": {
+      "name": "Pegelstand hat Schwellenwert überschritten",
+      "description": "Löst aus, wenn der Pegelstand einer Station den gesetzten Schwellenwert über- oder unterschreitet (Meter über Meer, wie von der Station gemeldet).",
+      "fields": {
+        "behavior": {
+          "name": "Auslösen wenn"
+        },
+        "for": {
+          "name": "Mindestens für"
+        },
+        "threshold": {
+          "name": "Schwellenwert"
+        }
+      }
+    },
+    "discharge_crossed_threshold": {
+      "name": "Abfluss hat Schwellenwert überschritten",
+      "description": "Löst aus, wenn der Abfluss einer Station den gesetzten Schwellenwert über- oder unterschreitet, in Kubikmetern pro Sekunde.",
+      "fields": {
+        "behavior": {
+          "name": "Auslösen wenn"
+        },
+        "for": {
+          "name": "Mindestens für"
+        },
+        "threshold": {
+          "name": "Schwellenwert"
+        }
+      }
+    }
+  },
+  "conditions": {
+    "is_flood_danger_at_least": {
+      "name": "Hochwasser-Gefahrenstufe ist mindestens",
+      "description": "Erfüllt, solange die amtliche Hochwasser-Gefahrenstufe einer Station auf der Stufe oder darüber liegt.",
+      "fields": {
+        "behavior": {
+          "name": "Bedingung erfüllt wenn"
+        },
+        "for": {
+          "name": "Mindestens für"
+        },
+        "level": {
+          "name": "Stufe"
+        }
+      }
+    },
+    "is_flood_danger_below": {
+      "name": "Hochwasser-Gefahrenstufe ist unter",
+      "description": "Erfüllt, solange die amtliche Hochwasser-Gefahrenstufe einer Station unter der Stufe liegt.",
+      "fields": {
+        "behavior": {
+          "name": "Bedingung erfüllt wenn"
+        },
+        "for": {
+          "name": "Mindestens für"
+        },
+        "level": {
+          "name": "Stufe"
+        }
+      }
+    }
   }
 }
