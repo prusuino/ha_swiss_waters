@@ -5,7 +5,7 @@ from homeassistant.config_entries import ConfigEntry
 from homeassistant.core import HomeAssistant
 from homeassistant.helpers.device_registry import DeviceEntryType, DeviceInfo
 
-from .const import DOMAIN
+from .const import DOMAIN, VERSION
 from .localization import t
 
 
@@ -29,6 +29,7 @@ def station_device_info(hass: HomeAssistant, entry: ConfigEntry, station: dict) 
     device_name = f"{water} – {name}" if water else name
     return DeviceInfo(
         identifiers={(DOMAIN, f"{entry.entry_id}_{station['station_id']}")},
+        sw_version=VERSION,
         name=device_name,
         manufacturer=t("manufacturer", hass),
         model=t("model", hass),
@@ -40,6 +41,7 @@ def bathing_device_info(hass: HomeAssistant, entry: ConfigEntry, site: dict) -> 
     """One device per bathing site."""
     return DeviceInfo(
         identifiers={(DOMAIN, f"{entry.entry_id}_{site['site_id']}")},
+        sw_version=VERSION,
         name=site.get("name") or site["site_id"],
         manufacturer=t("manufacturer", hass),
         model=t("bathing_model", hass),
