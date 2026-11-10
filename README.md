@@ -12,6 +12,18 @@ It also covers the official **bathing sites**: their **bathing water quality** p
 
 Want to know whether the Aare is warm enough for a swim, or keep an eye on the flood danger level of the river next to your house — right on your Home Assistant dashboard? That's what this integration does.
 
+## Highlights
+
+- **About 230 federal measuring stations**: water level and discharge of Swiss rivers and lakes, water temperature at about 84 of them, refreshed every 10 minutes from the FOEN's data on LINDAS — no account or key.
+- **Flood danger at a glance**: the official danger level 1–5 per station.
+- **Overview or favorite**: all stations within a radius of a location, or a single station picked by name — the modes combine freely.
+- **On the map**: one marker per station, labelled with the current water temperature.
+- **Bathing sites**: about 215 official sites with their water-quality class, plus the live temperature of two Lake Zurich stations.
+- **Built for the automation editor**: triggers (flood danger level reached; water temperature, level or discharge crossed a threshold), conditions (danger level at least / below) and a flood notification blueprint — no templates needed.
+- **A dashboard without building one**: the bundled strategy brings Map, Stations and Bathing sites views.
+- **Honest about age**: a reading older than the freshness limit is no longer shown as current.
+- **Set up in a minute**: starts from your Home Assistant location or a station name; German, English, French and Italian; diagnostics download with your coordinates redacted.
+
 ## Background
 
 The FOEN operates around 230 automatic monitoring stations on Swiss rivers and lakes and publishes their raw data — updated **every 10 minutes** — through the Swiss federal [LINDAS linked-data service](https://lindas.admin.ch), its official machine-readable channel. No API key, no registration.
