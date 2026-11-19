@@ -1,6 +1,7 @@
 {
   "domain": "swiss_waters",
   "name": "Swiss Waters (BAFU)",
+  "categories": ["weather_alerts.public_warnings"],
   "codeowners": ["@prusuino"],
   "config_flow": true,
   "dependencies": ["http"],
@@ -10,5 +11,5 @@
   "issue_tracker": "https://github.com/prusuino/ha_swiss_waters/issues",
   "quality_scale": "bronze",
   "requirements": [],
-  "version": "1.8.1"
+  "version": "1.8.2"
 }

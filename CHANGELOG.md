@@ -1,5 +1,9 @@
 # Changelog
 
+## 1.8.2 — 2026-11-19
+
+- The Home Assistant Marketplace lists the integration under *Weather & alerts → Public warnings*. The repository is marked as made for Switzerland. Nothing changes in how the integration works.
+
 ## 1.8.1 — 2026-11-09
 
 - **Version on the service card.** The integration's version now appears on its service card under Settings → Devices & services, where the entities are listed.

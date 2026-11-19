@@ -1,5 +1,6 @@
 {
   "name": "Swiss Waters (BAFU)",
+  "country": "CH",
   "zip_release": true,
   "filename": "swiss_waters.zip",
   "render_readme": true,
