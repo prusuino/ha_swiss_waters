@@ -199,7 +199,7 @@ The integration is listed in the Marketplace default catalog (formerly the HACS 
 
 The integration ships a **dashboard strategy**: a recipe Home Assistant renders in the browser, rather than a dashboard written into your configuration. Nothing is stored, nothing is overwritten, and the result follows your setup — add a station or a bathing site and it appears on the next page load; delete an entry and it is gone, with no leftover card.
 
-![Stations view of the dashboard, one section per station with water temperature, water level, discharge and flood danger level](docs/dashboard-stations.png)
+![Stations view of the dashboard, one section per station with water temperature, water level, discharge, flood danger level and trend](docs/dashboard-stations.png)
 
 ### Adding the strategy as a resource
 
