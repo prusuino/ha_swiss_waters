@@ -27,6 +27,7 @@ from homeassistant.helpers.update_coordinator import DataUpdateCoordinator, Upda
 from homeassistant.util import dt as dt_util
 
 from .issues import IssueReporter
+from .trend import Trends
 from .const import (
     BATHING_CUBE_MAX_AGE,
     BATHING_TEMP_MAX_AGE,
@@ -220,6 +221,8 @@ class SwissWatersCoordinator(DataUpdateCoordinator[dict]):
             update_interval=timedelta(minutes=UPDATE_INTERVAL_MINUTES),
         )
         self.issues = IssueReporter(hass, entry.entry_id)
+        # The readings of the last hours, for rising / steady / falling.
+        self.trends = Trends()
 
     async def _async_update_data(self) -> dict:
         data = self.config_entry.data
@@ -246,6 +249,7 @@ class SwissWatersCoordinator(DataUpdateCoordinator[dict]):
             self.issues.raise_now("station_missing", {"station": ", ".join(missing)})
         else:
             self.issues.clear("station_missing")
+        self.trends.update(stations)
         return {"stations": stations, "count": len(stations)}
 
 

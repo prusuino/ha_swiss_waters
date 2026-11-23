@@ -31,6 +31,9 @@ from .coordinator import SwissWatersCoordinator
 from .device import station_device_info
 
 _LOGGER = logging.getLogger(__name__)
+
+# The coordinator fetches the data; entities never call the services themselves.
+PARALLEL_UPDATES = 0
 SOURCE = "swiss_waters"
 
 

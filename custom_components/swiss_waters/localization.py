@@ -62,6 +62,15 @@ STRINGS: dict[str, dict[str, str]] = {
         "fr": "Débit",
         "it": "Portata",
     },
+    "sensor_trend": {
+        "de": "Tendenz",
+        "en": "Trend",
+        "fr": "Tendance",
+        "it": "Tendenza",
+    },
+    "trend_rising": {"de": "Steigend", "en": "Rising", "fr": "En hausse", "it": "In aumento"},
+    "trend_steady": {"de": "Gleichbleibend", "en": "Steady", "fr": "Stable", "it": "Stabile"},
+    "trend_falling": {"de": "Fallend", "en": "Falling", "fr": "En baisse", "it": "In diminuzione"},
     "sensor_danger_level": {
         "de": "Hochwasser-Gefahrenstufe",
         "en": "Flood danger level",

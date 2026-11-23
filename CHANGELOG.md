@@ -1,5 +1,13 @@
 # Changelog
 
+## 1.9.0 — 2026-11-23
+
+Checked against the live sources of 23 November 2026: all 232 stations read correctly, no data error found.
+
+- **New: trend.** A sensor per station says whether the water is *rising*, *steady* or *falling* — the newest water level against the one of about an hour before, or the discharge at a station without a level. The level, discharge and temperature sensors carry `trend` and `change_per_hour` as attributes. Worked out from the readings the integration has seen; no extra request. After a restart the trend is back once half an hour of readings has come in.
+- **Fixed: the trigger "Flood danger level reached" missed a rise during an outage.** When a station or the data service was unavailable while the danger level rose, the trigger did not fire once the level came back, because Home Assistant ignores changes out of "unavailable". The level is now compared with the last one before the gap: a river that rose during the outage fires, one that was already at the level does not fire a second time.
+- **Quality scale Silver.** Parallel updates are declared and the test suite grew from 19 to 79 tests covering 98 % of the code (41 % before); the test workflow fails below 95 %.
+
 ## 1.8.2 — 2026-11-19
 
 - The Home Assistant Marketplace lists the integration under *Weather & alerts → Public warnings*. The repository is marked as made for Switzerland. Nothing changes in how the integration works.

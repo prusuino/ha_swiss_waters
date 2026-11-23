@@ -8,7 +8,7 @@
 [![Validate](https://github.com/prusuino/ha_swiss_waters/actions/workflows/validate.yml/badge.svg)](https://github.com/prusuino/ha_swiss_waters/actions/workflows/validate.yml)
 [![Tests](https://github.com/prusuino/ha_swiss_waters/actions/workflows/tests.yml/badge.svg)](https://github.com/prusuino/ha_swiss_waters/actions/workflows/tests.yml)
 [![Home Assistant](https://img.shields.io/badge/dynamic/json?url=https%3A%2F%2Fraw.githubusercontent.com%2Fprusuino%2Fha_swiss_waters%2Fmain%2Fhacs.json&query=%24.homeassistant&label=Home%20Assistant&suffix=%2B&color=41BDF5)](https://www.home-assistant.io/)
-[![Quality scale](https://img.shields.io/badge/Quality%20Scale-Bronze-cd7f32.svg)](https://developers.home-assistant.io/docs/core/integration-quality-scale/)
+[![Quality scale](https://img.shields.io/badge/Quality%20Scale-Silver-c0c0c0.svg)](https://developers.home-assistant.io/docs/core/integration-quality-scale/)
 <a href="https://www.buymeacoffee.com/prusuino"><img src="https://cdn.buymeacoffee.com/buttons/v2/default-yellow.png" alt="Buy Me a Coffee" height="20"></a>
 
 A Home Assistant custom integration for the official Swiss hydrological monitoring network: live **water temperature**, **water level**, **discharge**, and **flood danger levels** of Swiss rivers and lakes, sourced from the **Federal Office for the Environment (FOEN/BAFU)**.
@@ -21,6 +21,7 @@ Want to know whether the Aare is warm enough for a swim, or keep an eye on the f
 
 - **About 230 federal measuring stations**: water level and discharge of Swiss rivers and lakes, water temperature at about 84 of them, refreshed every 10 minutes from the FOEN's data on LINDAS — no account or key.
 - **Flood danger at a glance**: the official danger level 1–5 per station.
+- **Rising or falling**: a trend per station — rising, steady or falling — from the readings of the last hour, and the change per hour on the level, discharge and temperature sensors.
 - **Overview or favorite**: all stations within a radius of a location, or a single station picked by name — the modes combine freely.
 - **On the map**: one marker per station, labelled with the current water temperature.
 - **Bathing sites**: about 215 official sites with their water-quality class, plus the live temperature of two Lake Zurich stations.
@@ -43,6 +44,7 @@ This integration queries LINDAS for all stations within a configurable radius ar
 | `sensor.swiss_waters_<station>_water_level_<entry>` | Water level (m a.s.l.). |
 | `sensor.swiss_waters_<station>_discharge_<entry>` | Discharge (m³/s). Rivers only — lakes don't report discharge. |
 | `sensor.swiss_waters_<station>_danger_level_<entry>` | Official flood danger level (1–5), with the localized FOEN danger scale as an attribute. |
+| `sensor.swiss_waters_<station>_trend_<entry>` | Whether the water is `rising`, `steady` or `falling`: the newest water level against the one of about an hour before (the discharge at a station without a level). Attributes: `trend_text` in your language, `based_on`, `change_per_hour`, and the trend of each measure (`water_level`, `discharge`, `temperature`). The level, discharge and temperature sensors carry `trend` and `change_per_hour` as well. See [Trend](#trend). |
 | `geo_location.<station name>` — see [Addressing the map markers](#addressing-the-map-markers) | One map marker per station. State = distance from the entry's location (km; the home location for a favorite). The map label shows the current water temperature, refreshed on every update; the marker goes unavailable while the data source is unreachable, and its measured values are blank once the station's latest reading is older than the freshness limit (see [Notes](#notes)). Attributes: temperature, water level, discharge, danger level, water body, station ID, measurement time. |
 
 `<station>` is the FOEN station number, `<entry>` the last four characters of the config entry's id in lower case — it keeps the sensors of two entries apart when the same station is part of a favorite and of a radius overview. Home Assistant applies these ids when it registers an entity for the first time; sensors created by a version before 1.5.0 keep the id they already have. Each sensor carries the station ID, water body, measurement time, and distance from your configured location as attributes. Data is refreshed every 10 minutes — the same cadence as the source.
@@ -99,6 +101,18 @@ Two additional setup modes cover the ~215 official Swiss bathing sites — again
 
 The [dashboard strategy](#dashboard) gives every site a section of its own; a tile card per site works just as well if you build your own dashboard — see [Building it yourself](#building-it-yourself) for an example.
 
+## Trend
+
+The FOEN feed carries only the latest reading of a station, so the integration keeps the readings it has seen for the last three hours and compares the newest one with the reading of about an hour before. Nothing is fetched for it and nothing is stored: after a restart of Home Assistant the trend reads *unknown* until half an hour of readings has come in.
+
+| Measure | Steady while the change per hour stays below |
+|---|---|
+| Water level | 2 cm |
+| Discharge | 5 % of the current flow (at least 0.05 m³/s) |
+| Water temperature | 0.3 °C |
+
+The trend sensor of a station follows its water level, or its discharge when the station reports no level. Use the state in a normal state trigger, for example to be told when a river next to the house starts to rise.
+
 ## Automations
 
 ### Blueprint: notify on flood danger
@@ -115,7 +129,7 @@ On Home Assistant 2026.10 or newer the integration adds its own entries to the a
 
 | Trigger | Fires when |
 |---|---|
-| **Flood danger level reached** | the official flood danger level of a station rises to the **minimum level** (2–5, default 3) or above — once, not on every change above it |
+| **Flood danger level reached** | the official flood danger level of a station rises to the **minimum level** (2–5, default 3) or above — once, not on every change above it. A level that returns after a gap (the station or the service was unavailable) is compared with the last level before the gap: a river that rose during the outage still fires, one that was already at the level does not fire again |
 | **Water temperature crossed a threshold** | the water temperature crosses the threshold you set (a number or another entity) |
 | **Water level crossed a threshold** | the water level crosses the threshold you set |
 | **Discharge crossed a threshold** | the discharge crosses the threshold you set |
@@ -308,7 +322,7 @@ The integration never creates or modifies a dashboard on your behalf — the str
 
 ## Quality scale
 
-The integration declares **Bronze** on the [Home Assistant integration quality scale](https://developers.home-assistant.io/docs/core/integration-quality-scale/): a config flow with tests, unique ids for every entity, brand images, installation and removal instructions, a connection check before an entry is created, no duplicate entries, runtime data on the config entry, and the other Bronze rules. The tier is self-assessed, as it is for every custom integration; the per-rule status, including what is still open for Silver and Gold, is in `custom_components/swiss_waters/quality_scale.yaml`.
+The integration declares **Silver** on the [Home Assistant integration quality scale](https://developers.home-assistant.io/docs/core/integration-quality-scale/). Bronze: a config flow with tests, unique ids for every entity, brand images, installation and removal instructions, a connection check before an entry is created, no duplicate entries, runtime data on the config entry. Silver on top of it: the entities and the map markers turn unavailable when the data cannot be read or a reading is too old, and that is logged once, the entry unloads cleanly, every setup parameter is documented, parallel updates are declared, and the tests cover more than 95 % of the code (the test workflow fails below that). The tier is self-assessed, as it is for every custom integration; the per-rule status, including what is still open for Silver and Gold, is in `custom_components/swiss_waters/quality_scale.yaml`.
 
 ## Notes
 

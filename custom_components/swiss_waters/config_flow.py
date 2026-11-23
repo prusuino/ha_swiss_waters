@@ -56,7 +56,7 @@ _LOGGER = logging.getLogger(__name__)
 # Unique-id suffixes the sensor platform uses per station / per bathing site
 # (see sensor.py). Reconfigure uses them to tell the entities of stations
 # that stay selected from those that have to go.
-_STATION_MEASURES = ("temperature", "water_level", "discharge", "danger_level")
+_STATION_MEASURES = ("temperature", "water_level", "discharge", "danger_level", "trend")
 _BATHING_MEASURES = ("quality", "last_sample", "water_temperature")
 
 

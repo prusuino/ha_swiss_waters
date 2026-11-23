@@ -40,6 +40,11 @@ from .const import ATTRIBUTION, BATHING_ATTRIBUTION, DOMAIN
 from .coordinator import SwissWatersCoordinator
 from .device import bathing_device_info, entry_suffix, station_device_info
 from .localization import bathing_quality_text, danger_scale, t
+from .trend import MEASURES as TREND_MEASURES
+from .trend import TRENDS, station_trend
+
+# The coordinator fetches the data; entities never call the services themselves.
+PARALLEL_UPDATES = 0
 
 # (data_key, name_key, device_class, state_class, unit, icon, precision)
 _MEASURES = [
@@ -72,6 +77,11 @@ def _new_station_entities(
                 continue
             known.add(key)
             entities.append(SwissWatersSensor(hass, coordinator, entry, station, *measure))
+        # One trend sensor per station that reports a level or a discharge.
+        key = (station["station_id"], "trend")
+        if key not in known and (station.get("water_level") is not None or station.get("discharge") is not None):
+            known.add(key)
+            entities.append(SwissWatersTrendSensor(hass, coordinator, entry, station))
     return entities
 
 
@@ -181,7 +191,67 @@ class SwissWatersSensor(CoordinatorEntity[SwissWatersCoordinator], SensorEntity)
         }
         if self._data_key == "danger_level":
             attrs["danger_scale"] = danger_scale(self._hass_ref)
+        if self._data_key in TREND_MEASURES:
+            trend = (station.get("trends") or {}).get(self._data_key) or {}
+            attrs["trend"] = trend.get("trend")
+            attrs["change_per_hour"] = trend.get("change_per_hour")
         return attrs
+
+
+class SwissWatersTrendSensor(CoordinatorEntity[SwissWatersCoordinator], SensorEntity):
+    """Whether the water at a station is rising, steady or falling.
+
+    Taken from the water level, or from the discharge at a station without a
+    level: the newest reading against the one of about an hour before (see
+    trend.py). Unknown until half an hour of readings has come in after a
+    start, unavailable like the other sensors while the station is stale.
+    """
+
+    _attr_has_entity_name = True
+    _attr_attribution = ATTRIBUTION
+    _attr_device_class = SensorDeviceClass.ENUM
+    _attr_options = TRENDS
+
+    def __init__(self, hass: HomeAssistant, coordinator: SwissWatersCoordinator, entry: ConfigEntry, station: dict) -> None:
+        super().__init__(coordinator)
+        self._hass_ref = hass
+        self._station_id = station["station_id"]
+        self._attr_name = t("sensor_trend", hass)
+        self._attr_unique_id = f"{entry.entry_id}_{self._station_id}_trend"
+        self.entity_id = f"sensor.swiss_waters_{self._station_id}_trend_{entry_suffix(entry)}"
+        self._attr_device_info = station_device_info(hass, entry, station)
+
+    def _station(self) -> dict:
+        return (self.coordinator.data or {}).get("stations", {}).get(self._station_id, {})
+
+    @property
+    def available(self) -> bool:
+        station = self._station()
+        return super().available and bool(station) and station.get("fresh", False)
+
+    @property
+    def native_value(self):
+        return station_trend(self._station())[0]
+
+    @property
+    def icon(self) -> str:
+        return {"rising": "mdi:trending-up", "falling": "mdi:trending-down"}.get(self.native_value, "mdi:trending-neutral")
+
+    @property
+    def extra_state_attributes(self):
+        station = self._station()
+        trend, basis = station_trend(station)
+        trends = station.get("trends") or {}
+        return {
+            "station_id": self._station_id,
+            "trend_text": t(f"trend_{trend}", self._hass_ref) if trend else None,
+            "based_on": basis,
+            "change_per_hour": (trends.get(basis) or {}).get("change_per_hour") if basis else None,
+            "water_level": (trends.get("water_level") or {}).get("trend"),
+            "discharge": (trends.get("discharge") or {}).get("trend"),
+            "temperature": (trends.get("temperature") or {}).get("trend"),
+            "measurement_time": station.get("measurement_time"),
+        }
 
 
 class SwissBathingQualitySensor(CoordinatorEntity, SensorEntity):

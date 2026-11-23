@@ -396,6 +396,7 @@ const SW_MEASURES = [
   ["station", "water_level"],
   ["station", "discharge"],
   ["station", "danger_level"],
+  ["station", "trend"],
 ];
 
 /* Classify one registry entry. Unknown suffixes get no kind and sort after

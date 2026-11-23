@@ -82,22 +82,36 @@ else:
     class _FloodDangerLevelReached(EntityTriggerBase):
         """A station's flood danger level rises to the minimum level or above.
 
-        Fires when the level goes from below the minimum (or from no value)
-        to the minimum or higher; a change between two levels above the
-        minimum does not fire again."""
+        Fires when the level goes from below the minimum to the minimum or
+        higher; a change between two levels above the minimum does not fire
+        again. A level that comes back after a gap — the station or the
+        service was unavailable — is compared with the last level seen
+        before the gap: a river that rose during the outage fires, one that
+        was already at the level does not fire a second time."""
 
         _domain_specs = ANY_SENSOR_SPECS
         _schema = DANGER_LEVEL_SCHEMA
+        # The core skips transitions out of "unavailable"/"unknown" by
+        # default; here they are judged against the remembered level instead.
+        _excluded_from_states = frozenset()
 
         def __init__(self, hass: HomeAssistant, config) -> None:
             super().__init__(hass, config)
             self._minimum = int(self._options.get(CONF_MINIMUM_LEVEL) or DEFAULT_MINIMUM_LEVEL)
+            # Per entity: the level of the newest reading and the one before
+            # it. The core asks is_valid_state for every reading with a
+            # value (also the ones below the minimum) and only then
+            # is_valid_transition, so the levels are remembered there.
+            self._last_level: dict[str, int] = {}
+            self._previous_level: dict[str, int | None] = {}
 
         def entity_filter(self, entities: set[str]) -> set[str]:
             return _own_entities(self._hass, super().entity_filter(entities), "danger_level")
 
         def is_valid_transition(self, from_state: State, to_state: State) -> bool:
             before = _level(from_state)
+            if before is None:
+                before = self._previous_level.get(to_state.entity_id)
             after = _level(to_state)
             return after is not None and after >= self._minimum and (before is None or before < self._minimum)
 
@@ -106,6 +120,8 @@ else:
             if level is None:
                 report_not_triggered("level_not_numeric", entity_id=state.entity_id)
                 return False
+            self._previous_level[state.entity_id] = self._last_level.get(state.entity_id)
+            self._last_level[state.entity_id] = level
             return level >= self._minimum
 
     class _WaterTemperatureCrossed(
