@@ -1,5 +1,9 @@
 # Changelog
 
+## 1.9.1 — 2026-11-24
+
+- **Diagnostics without distances.** The diagnostics download no longer contains distances: the state of the map markers (their distance from the home zone), distance sensors and every distance field are redacted, like the coordinates already were. The points they lead to are public, so a handful of distances was enough to work out where they were measured from. If you posted a diagnostics file publicly, consider removing it.
+
 ## 1.9.0 — 2026-11-23
 
 Checked against the live sources of 23 November 2026: all 232 stations read correctly, no data error found.
